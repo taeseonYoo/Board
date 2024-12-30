@@ -14,13 +14,25 @@ public class Member extends BaseTimeEntity{
     @Column(name = "member_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
-
+    @Column(nullable = false, unique = true)
     private String email;
-
+    @Column(nullable = false)
     private String password;
-
+    @Column(nullable = false, unique = true)
     private String nickname;
+
+    public Member(String name, String email, String password, String nickname) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+    }
+
+    public static Member createMember(String name, String email, String password, String nickname) {
+        return new Member(name, email, password, nickname);
+    }
 
     /**
      * 양방향 연관관계를 위해 생성함.
