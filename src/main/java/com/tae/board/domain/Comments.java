@@ -10,13 +10,13 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 public class Comments extends BaseTimeEntity{
 
     @Id @GeneratedValue
     @Column(name = "comments_id")
     private Long id;
 
+    @Column(nullable = false)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,4 +26,10 @@ public class Comments extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public void updatePost(Post post) {
+        this.post = post;
+    }
+
+
 }
