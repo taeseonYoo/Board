@@ -25,14 +25,27 @@ public class Post extends BaseTimeEntity{
     @Column(length = 1000, nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private Long view_count;
+    @Column(name = "view_count",nullable = false)
+    private Long viewCount=0L;
 
     @Column(nullable = false)
     private String writer;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comments> comments = new ArrayList<>();
+
+    protected Post() {
+
+    }
+    public Post(Member member,String title,String content,String writer){
+        setMember(member);
+        this.title = title;
+        this.content = content;
+        this.writer = writer;
+    }
+    public static Post createPost(Member member,String title,String content,String writer) {
+        return new Post(member,title,content,writer);
+    }
 
     //연관 관계 메서드
     public void setMember(Member member) {
@@ -43,5 +56,21 @@ public class Post extends BaseTimeEntity{
         this.comments.add(comments);
         comments.updatePost(this);
     }
+
+    /**
+     * 비즈니스 로직 작성
+     */
+    //게시글 수정
+    public void updatePost(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    //조회 수 증가
+    public void addViewCount() {
+        this.viewCount++;
+    }
+
+
 
 }
