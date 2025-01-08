@@ -28,6 +28,7 @@ public class PostRepository {
         Post post = em.find(Post.class, postId);
 
         if (post != null) {
+            post.removeMember();
             em.remove(post);
         }
 
