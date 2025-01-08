@@ -56,6 +56,11 @@ public class Post extends BaseTimeEntity{
         this.comments.add(comments);
         comments.updatePost(this);
     }
+    // 연관 관계 해제 메서드
+    public void removeMember() {
+        this.member.getPosts().remove(this);
+        this.member = null;
+    }
 
     /**
      * 비즈니스 로직 작성

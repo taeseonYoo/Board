@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class PostServiceTest {
 
-    @PersistenceContext
-    EntityManager em;
     @Autowired
     PostService postService;
     @Autowired
@@ -141,18 +139,18 @@ class PostServiceTest {
     }
 
 
-//    @Test
-//    public void 게시글_삭제() {
-//        //given
-//        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-//        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
-//
-//        //when
-//        postService.deletePost(post.getId());
-//
-//        //then
-//        assertThat(postService.findPostsByMember(member.getId()).size()).isEqualTo(0);
-//    }
+    @Test
+    public void 게시글_삭제() {
+        //given
+        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
+        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
+
+        //when
+        postService.deletePost(post.getId());
+
+        //then
+        assertThat(postService.findPostsByMember(member.getId()).size()).isEqualTo(0);
+    }
 
 
     private Member createMember(String name, String email, String password, String nickname) {
