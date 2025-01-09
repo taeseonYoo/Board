@@ -45,4 +45,11 @@ public class Member extends BaseTimeEntity{
      */
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
+
+    //변경 할 수 있는 데이터는 패스워드와 닉네임뿐
+    public void update(String password,String nickname){
+        this.password = password;
+        this.nickname = nickname;
+    }
+
 }

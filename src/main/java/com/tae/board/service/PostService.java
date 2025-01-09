@@ -2,6 +2,7 @@ package com.tae.board.service;
 
 
 import com.tae.board.domain.Post;
+import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,13 @@ public class PostService {
     }
 
     @Transactional
-    public void update(Long postId,String title,String content) {
+    public Long update(Long postId,String title,String content) {
         Post findPost = postRepository.findOne(postId);
         if (findPost == null) {
             throw new PostNotFoundException("게시글이 존재하지 않습니다.");
         }
         findPost.updatePost(title, content);
+        return findPost.getId();
     }
     @Transactional
     public void viewPost(Long postId) {

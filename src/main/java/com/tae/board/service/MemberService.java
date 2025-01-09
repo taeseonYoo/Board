@@ -1,7 +1,10 @@
 package com.tae.board.service;
 
 import com.tae.board.domain.Member;
+import com.tae.board.dto.MemberInfoDto;
+import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
+import com.tae.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +20,24 @@ public class MemberService {
      * 생성자 주입을 사용한다.
      */
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public Long join(Member member){
-        //닉네임 검증만 했음. 나중에는 모든 경우를 검증해야하나?
+        //닉네임 검증만 했음.
         validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
     }
 
-    private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findByNickName(member.getNickname());
-        if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+    @Transactional
+    public void updateMember(Long memberId, String password, String nickname) {
+        Member member = memberRepository.findOne(memberId);
+        if (nickname.equals(member.getNickname())) {
+            validateDuplicateMember(member);
         }
+        member.update(password, nickname);
     }
 
     public List<Member> findMembers() {
@@ -40,15 +47,20 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
-    /**
-     * 멤버 개인 정보 조회
-     * 작성한 글, 작성한 댓글, 정보
-     * dto를 따로 만들어야 할 듯
-     */
-    public void findMemberInfo() {
-        //개인정보
-        //작성한 글
-        //작성한 댓글
+    @Transactional
+    public MemberInfoDto getMemberInfo(Member member) {
+        MemberInfoDto memberInfoDto = new MemberInfoDto(member);
+
+        memberInfoDto.setPosts(postRepository.findAllByMember(member.getId()));
+        memberInfoDto.setComments(commentRepository.findByMember(member.getId()));
+
+        return memberInfoDto;
     }
 
+    private void validateDuplicateMember(Member member) {
+        List<Member> findMembers = memberRepository.findByNickName(member.getNickname());
+        if (!findMembers.isEmpty()) {
+            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+        }
+    }
 }
