@@ -1,4 +1,4 @@
-package com.tae.board.service;
+package com.tae.board.exception;
 
 public class PostNotFoundException extends RuntimeException{
     public PostNotFoundException() {

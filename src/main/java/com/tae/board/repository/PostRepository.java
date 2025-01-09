@@ -1,9 +1,9 @@
 package com.tae.board.repository;
 
 import com.tae.board.domain.Post;
+import com.tae.board.exception.PostNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,23 +14,22 @@ public class PostRepository {
 
     private final EntityManager em;
 
-    //게시글 저장
+    /**
+     * 게시글 저장은 persist를 사용한다
+     * 수정 시에는 더티 채킹을 통하여 변경한다.
+     */
     public void save(Post post) {
-        if (post.getId() == null) {
-            //아직 저장되지 않음
-            em.persist(post);
-        } else {
-            em.merge(post);
-        }
+        em.persist(post);
     }
     //게시글 삭제
     public void delete(Long postId) {
         Post post = em.find(Post.class, postId);
 
-        if (post != null) {
-            post.removeMember();
-            em.remove(post);
+        if (post == null) {
+            throw new PostNotFoundException("댓글을 찾을 수 없습니다.");
         }
+        post.removeMember();
+        em.remove(post);
 
     }
     //게시글 단건 검색

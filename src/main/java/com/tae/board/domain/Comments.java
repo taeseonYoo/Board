@@ -10,9 +10,10 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Comments extends BaseTimeEntity{
+public class Comments extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "comments_id")
     private Long id;
 
@@ -27,8 +28,35 @@ public class Comments extends BaseTimeEntity{
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public void updatePost(Post post) {
+    protected Comments() {
+    }
+
+    public Comments(String comment, Member member, Post post) {
+        addComments(post);
+        this.member = member;
+        this.comment = comment;
+    }
+
+    public static Comments createComments(String comment, Member member, Post post) {
+        return new Comments(comment, member, post);
+    }
+
+
+    //연관관계 메서드
+    public void addComments(Post post) {
+        post.getComments().add(this);
         this.post = post;
+    }
+    public void removePost() {
+        this.post.getComments().remove(this);
+        this.post = null;
+    }
+
+    /**
+     * 비즈니스 로직
+     */
+    public void updateComments(String comment) {
+        this.comment = comment;
     }
 
 

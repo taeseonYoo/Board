@@ -1,31 +1,25 @@
 package com.tae.board.service;
 
 import com.tae.board.domain.Member;
-import com.tae.board.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
 @Transactional
 class MemberServiceTest {
-    @Autowired MemberRepository memberRepository;
     @Autowired MemberService memberService;
 
     @Test
-    public void 회원가입() throws Exception {
+    public void 회원가입(){
         //given
         Member member = Member.createMember("kim","spring@naver.com",
-                "asd123","kino");
-
+                "password123","kinopio");
         //when
         Long savedId = memberService.join(member);
 
@@ -34,12 +28,12 @@ class MemberServiceTest {
     }
 
     @Test
-    public void 중복_닉네임() throws Exception {
+    public void 중복_닉네임(){
         //given
         Member member1 = Member.createMember("kim","spring@naver.com",
-                "asd123","kino");
-        Member member2 = Member.createMember("yoo","spring@google.com",
-                "asd123","kino");
+                "password123","kinopio");
+        Member member2 = Member.createMember("lee","spring@google.com",
+                "password234","kinopio");
         //when
         memberService.join(member1);
         IllegalStateException exception = assertThrows(IllegalStateException.class,
@@ -51,19 +45,34 @@ class MemberServiceTest {
     }
 
     @Test
+    public void 회원정보수정() {
+        //given
+        Member member = Member.createMember("kim","spring@naver.com",
+                "password123","kinopio");
+        //when
+        memberService.join(member);
+        memberService.updateMember(member.getId(), "1234", "newname");
+        Member changedMember = memberService.findOne(member.getId());
+        //then
+        assertThat(changedMember.getPassword()).isEqualTo("1234");
+        assertThat(changedMember.getNickname()).isEqualTo("newname");
+    }
+
+    @Test
 //    @Rollback(value = false)
     public void 회원가입_롤백X() {
         //given
         Member member1 = Member.createMember("kim","spring@naver.com",
-                "1234567","mario");
-        Member member2 = Member.createMember("yoo","jpa@google.com",
-                "asdfgh","kino");
+                "password123","kinopio");
+        Member member2 = Member.createMember("lee","spring@google.com",
+                "password234","mario");
         //when
         memberService.join(member1);
         memberService.join(member2);
 
         //then
         List<Member> members = memberService.findMembers();
-        Assertions.assertThat(members.size()).isEqualTo(2);
+        assertThat(members.size()).isEqualTo(2);
     }
+
 }

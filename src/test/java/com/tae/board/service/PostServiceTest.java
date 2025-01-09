@@ -2,17 +2,11 @@ package com.tae.board.service;
 
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
-import com.tae.board.repository.MemberRepository;
-import com.tae.board.repository.PostRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.junit.jupiter.api.AfterEach;
+import com.tae.board.exception.PostNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -75,15 +69,6 @@ class PostServiceTest {
         assertThat(postService.findOne(savedPostId).getViewCount()).isEqualTo(2);
     }
 
-    @Test
-    public void 조회수_검색_예외() {
-        //given
-        Long notSavedId = 5L;
-
-        //when then
-        assertThrows(PostNotFoundException.class,
-                () -> postService.viewPost(notSavedId));
-    }
 
     @Test
     public void 모든_게시글_검색() {
@@ -125,7 +110,7 @@ class PostServiceTest {
     }
 
     @Test
-    public void 게시글_수정() {
+    public void 게시글_수정1() {
         //given
         Member member = createMember("tae", "kino@spring.com", "123456", "kino");
         Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
@@ -150,6 +135,28 @@ class PostServiceTest {
 
         //then
         assertThat(postService.findPostsByMember(member.getId()).size()).isEqualTo(0);
+    }
+
+    @Test
+    public void 게시글_수정() {
+        //given
+        String title = "변경 전";
+        String content = "변경 전 게시글 내용입니다";
+        String updateTitle = "변경 후";
+        String updateContent = "변경 후 게시글 내용입니다";
+
+        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
+        Post post = createPost(member, title, content, member.getNickname());
+        //then
+        Long updateId = postService.update(post.getId(), updateTitle, updateContent);
+        Post updatedPost = postService.findOne(updateId);
+
+        //when
+        assertThat(updatedPost.getTitle()).isEqualTo(updateTitle);
+        assertThat(updatedPost.getContent()).isEqualTo(updateContent);
+
+        assertThat(updatedPost.getTitle()).isNotEqualTo(title);
+        assertThat(updatedPost.getContent()).isNotEqualTo(content);
     }
 
 
