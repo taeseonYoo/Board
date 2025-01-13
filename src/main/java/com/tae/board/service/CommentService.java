@@ -1,6 +1,6 @@
 package com.tae.board.service;
 
-import com.tae.board.controller.CommentForm;
+import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;

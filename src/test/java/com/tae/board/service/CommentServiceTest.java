@@ -1,10 +1,9 @@
 package com.tae.board.service;
 
-import com.tae.board.controller.CommentForm;
+import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
-import com.tae.board.repository.CommentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

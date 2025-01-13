@@ -1,4 +1,4 @@
-package com.tae.board.controller;
+package com.tae.board.controller.form;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<nav class="navbar navbar-light" style="background-color: #87CEEB; padding: 1.5rem;" th:fragment="bodyHeader">
+    <div class="container-fluid">
+        <a class="navbar-brand fs-3 fw-bold" href="/">Board</a>
+        <div class="d-flex">
+            <a th:href="@{/auth}" class="btn btn-outline-primary me-2">회원 가입</a>
+            <a th:href="@{/auth/login}" class="btn btn-outline-primary">로그인</a>
+        </div>
+    </div>
+</nav>
