@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        .fieldError{
+            border-color: #bd2130 !important;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 가입</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation Bar -->
+<div th:replace="fragments/bodyHeader::bodyHeader"/>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">회원 가입</h2>
+    <form role="form" th:action="@{/auth/register}" method="post" th:object="${memberForm}">
+        <div class="mb-3">
+            <label th:for="name" class="form-label">이름</label>
+            <input type="text" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요"
+                   th:class="${#fields.hasErrors('name') ? 'form-control is-invalid' : 'form-control'}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect name</p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label th:for="password" class="form-label">비밀번호</label>
+            <input type="text" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요"
+                   th:class="${#fields.hasErrors('password') ? 'form-control is-invalid' : 'form-control'}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect password</p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label th:for="email" class="form-label">이메일</label>
+            <input type="text" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요"
+                   th:class="${#fields.hasErrors('email') ? 'form-control is-invalid' : 'form-control'}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect email</p>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label th:for="nickname" class="form-label">닉네임</label>
+            <input type="text" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요"
+                   th:class="${#fields.hasErrors('nickname') ? 'form-control is-invalid' : 'form-control'}"/>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('nickname')}">
+                <p th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">Incorrect nickname</p>
+            </div>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">회원 가입</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.min.js}">
+</script>
+</body>
+</html>
