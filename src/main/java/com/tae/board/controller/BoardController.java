@@ -1,11 +1,15 @@
 package com.tae.board.controller;
 
+import com.tae.board.controller.form.MemberForm;
 import com.tae.board.controller.form.PostForm;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.security.MemberDetail;
 import com.tae.board.service.MemberService;
 import com.tae.board.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +25,12 @@ public class BoardController {
     private final MemberService memberService;
 
     @GetMapping({"/", "/board"})
-    public String home(Model model) {
+    public String home(@AuthenticationPrincipal MemberDetail memberDetail,Model model) {
         List<Post> posts = postService.findPosts();
+
+        if (memberDetail != null) {
+            model.addAttribute("nickname", memberDetail.getNickname());
+        }
         model.addAttribute("posts", posts);
         return "board";
     }
@@ -43,4 +51,5 @@ public class BoardController {
         postService.savePost(post);
         return "redirect:/board";
     }
+
 }

@@ -6,6 +6,7 @@ import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+
 
     @Transactional
     public Long join(Member member){
