@@ -38,4 +38,10 @@ public class MemberRepository {
                 .getResultList();
     }
 
+    public Member findByEmail(String email) {
+        return (Member) em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
+
 }

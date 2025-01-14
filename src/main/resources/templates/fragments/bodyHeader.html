@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <nav class="navbar navbar-light" style="background-color: #87CEEB; padding: 1.5rem;" th:fragment="bodyHeader">
     <div class="container-fluid">
         <a class="navbar-brand fs-3 fw-bold" href="/">Board</a>
-        <div class="d-flex">
-            <a th:href="@{/auth}" class="btn btn-outline-primary me-2">회원 가입</a>
+<!--인증된 사용자-->
+        <div class="d-flex" sec:authorize="isAuthenticated()">
+            <p th:text="${nickname}"></p>
+            <a th:href="@{/mypage}" class="btn btn-outline-primary me-2">마이페이지</a>
+            <a th:href="@{/logout}" class="btn btn-outline-primary me-2">로그아웃</a>
+        </div>
+<!--        인증되지 않은 사용자-->
+        <div class="d-flex" sec:authorize="isAnonymous()">
+            <a th:href="@{/auth/register}" class="btn btn-outline-primary me-2">회원 가입</a>
             <a th:href="@{/auth/login}" class="btn btn-outline-primary">로그인</a>
         </div>
+
     </div>
 </nav>
