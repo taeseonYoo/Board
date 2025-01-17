@@ -29,7 +29,6 @@ public class MemberController {
         return "member/loginForm";
     }
 
-
     //회원가입
     @PostMapping("/auth/register")
     public String create(@Valid MemberForm memberForm, BindingResult bindingResult) {

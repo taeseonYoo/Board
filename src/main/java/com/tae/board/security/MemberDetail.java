@@ -3,7 +3,6 @@ package com.tae.board.security;
 import com.tae.board.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Collections;
 
@@ -14,9 +13,10 @@ public class MemberDetail implements UserDetails {
         this.member = member;
     }
 
+    //권한 목록을 반환한다.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Override

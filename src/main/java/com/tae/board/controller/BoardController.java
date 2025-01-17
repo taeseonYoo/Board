@@ -41,15 +41,15 @@ public class BoardController {
         return "post/createPostForm";
     }
 
-    @PostMapping("/board/post")
-    public String create(PostForm postForm) {
-
-        Member member = Member.createMember("tae","tae@naver,com","1234","kino");
-        memberService.join(member);
-        Post post = Post.createPost(member, postForm.getTitle(), postForm.getContent(), member.getNickname());
-
-        postService.savePost(post);
-        return "redirect:/board";
-    }
+//    @PostMapping("/board/post")
+//    public String create(PostForm postForm) {
+//
+//        Member member = Member.createMember("tae","tae@naver,com","1234","kino");
+//        memberService.join(member);
+//        Post post = Post.createPost(member, postForm.getTitle(), postForm.getContent(), member.getNickname());
+//
+//        postService.savePost(post);
+//        return "redirect:/board";
+//    }
 
 }

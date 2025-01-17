@@ -20,18 +20,18 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th scope="col">#</th>
             <th scope="col">제목</th>
             <th scope="col">작성자</th>
             <th scope="col">작성일</th>
+            <th scope="col">조회수</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="post : ${posts}">
-            <th scope="row" th:text="${post.id}">1</th>
             <td th:text="${post.title}">게시글 제목</td>
             <td th:text="${post.writer}">작성자</td>
             <td th:text="${post.createdDate}">2025-01-09</td>
+            <td th:text="${post.viewCount}">조회수</td>
         </tr>
         </tbody>
     </table>

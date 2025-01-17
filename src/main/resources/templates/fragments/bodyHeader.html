@@ -6,7 +6,7 @@
         <a class="navbar-brand fs-3 fw-bold" href="/">Board</a>
 <!--인증된 사용자-->
         <div class="d-flex" sec:authorize="isAuthenticated()">
-            <p th:text="${nickname}"></p>
+            <p th:text="${nickname}" style="margin-right: 1.5rem; font-size: 1.2rem; font-weight: bold; color: #2F4F4F;"></p>
             <a th:href="@{/mypage}" class="btn btn-outline-primary me-2">마이페이지</a>
             <a th:href="@{/logout}" class="btn btn-outline-primary me-2">로그아웃</a>
         </div>
