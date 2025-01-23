@@ -32,7 +32,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
                         .invalidateHttpSession(true)
                 );

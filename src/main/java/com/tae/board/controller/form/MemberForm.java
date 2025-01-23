@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class MemberForm {
 
     //null 이거나 빈 값일 경우 유효하지 않다.
@@ -17,7 +16,7 @@ public class MemberForm {
     private String name;
 
     @NotEmpty(message = "{member.password.empty}")
-    @Size(min=8,max = 20,message = "{member.password.size}")
+    @Size(min=4,max = 12,message = "{member.password.size}")
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{member.password.format}")
     private String password;
 
@@ -27,4 +26,11 @@ public class MemberForm {
 
     @NotEmpty(message = "{member.nickname.empty}")
     private String nickname;
+
+    public MemberForm(String name, String password, String email, String nickname) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.nickname = nickname;
+    }
 }
