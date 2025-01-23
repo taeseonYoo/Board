@@ -6,22 +6,34 @@ import com.tae.board.domain.Post;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 public class MemberInfoDto {
-    private Long memberId;
     private String name;
     private String email;
+    private LocalDateTime createdDate;
     private String nickname;
     private List<Post> posts;
     private List<Comments> comments;
 
-    public MemberInfoDto(Member member) {
-        this.memberId = member.getId();
-        this.name = member.getName();
-        this.email = member.getEmail();
-        this.nickname = member.getNickname();
+    protected MemberInfoDto() {
     }
+
+    private MemberInfoDto(String name, String email, LocalDateTime createdDate,
+                          String nickname, List<Post> posts,List<Comments> comments) {
+        this.name = name;
+        this.email = email;
+        this.createdDate = createdDate;
+        this.nickname = nickname;
+        this.posts = posts;
+        this.comments = comments;
+    }
+    public static MemberInfoDto createMemberInfo(String name, String email, LocalDateTime createdDate,
+                                                 String nickname,List<Post> posts,List<Comments> comments){
+        return new MemberInfoDto(name, email, createdDate, nickname, posts, comments);
+    }
+
+
 }

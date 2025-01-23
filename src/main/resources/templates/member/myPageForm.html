@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .user-info {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-info h2 {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .user-info p {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        table th, table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/bodyHeader::bodyHeader"></div>
+
+<div class="container mt-5">
+    <!-- 개인 정보 -->
+    <div class="section-title">내 정보</div>
+    <div class="user-info mb-4">
+        <p></p>
+        <p><strong>이름:</strong> <span th:text="${memberInfo.name}">기본이름</span></p>
+        <p><strong>이메일:</strong> <span th:text="${memberInfo.email}">example@domain.com</span></p>
+        <p><strong>가입일:</strong> <span th:text="${memberInfo.createdDate}">2025-01-01</span></p>
+        <p><strong>닉네임:</strong> <span th:text="${memberInfo.nickname}"></span></p>
+    </div>
+
+    <!-- 작성한 게시글 -->
+    <div class="section-title">작성한 게시글</div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col" class="col-9">제목</th>
+            <th scope="col" class="col-2">작성일</th>
+            <th scope="col" class="col-2">조회수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${memberInfo.posts}">
+            <td><a th:href="@{/board/{id}(id=${post.id})}" class="text-decoration-none" th:text="${post.title}">게시글 제목</a></td>
+            <td th:text="${post.createdDate}">2025-01-09</td>
+            <td th:text="${post.viewCount}">조회수</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 작성한 댓글 -->
+    <div class="section-title">작성한 댓글</div>
+    <ul class="list-group">
+        <li class="list-group-item" th:each="comment : ${memberInfo.comments}">
+            <a th:href="@{/board/{id}(id=${comment.post.id})}" class="text-decoration-none">
+                <div th:text="${comment.comment}">댓글 내용</div>
+                <div class="small" th:text="'['+${comment.post.title}+']'">게시글 제목</div>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}">
+</script>
+</body>
+</html>

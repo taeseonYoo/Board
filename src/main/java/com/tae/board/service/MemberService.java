@@ -1,6 +1,8 @@
 package com.tae.board.service;
 
+import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
+import com.tae.board.domain.Post;
 import com.tae.board.dto.MemberInfoDto;
 import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
@@ -49,14 +51,20 @@ public class MemberService {
         return memberRepository.findOne(memberId);
     }
 
+
+
     @Transactional
-    public MemberInfoDto getMemberInfo(Member member) {
-        MemberInfoDto memberInfoDto = new MemberInfoDto(member);
+    public MemberInfoDto getMemberInfo(String email) {
+        Member findByEmail = memberRepository.findByEmail(email);
+        List<Post> findPosts = postRepository.findAllByMember(findByEmail.getId());
+        List<Comments> findComments = commentRepository.findByMember(findByEmail.getId());
 
-        memberInfoDto.setPosts(postRepository.findAllByMember(member.getId()));
-        memberInfoDto.setComments(commentRepository.findByMember(member.getId()));
-
-        return memberInfoDto;
+        return MemberInfoDto.createMemberInfo(findByEmail.getName(),
+                findByEmail.getEmail(),
+                findByEmail.getCreatedDate(),
+                findByEmail.getNickname(),
+                findPosts,
+                findComments);
     }
 
     private void validateDuplicateMember(Member member) {
