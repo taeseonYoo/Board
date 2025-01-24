@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <style>
-        .fieldError{
-            border-color: #bd2130 !important;
-        }
-    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 가입</title>
@@ -14,7 +9,7 @@
 </head>
 <body>
 <!-- Navigation Bar -->
-<div th:replace="fragments/bodyHeader::bodyHeader"></div>
+<div th:replace="~{fragments/bodyHeader::bodyHeader}"></div>
 
 <!-- Main Content -->
 <div class="container mt-5">
@@ -30,7 +25,7 @@
         </div>
         <div class="mb-3">
             <label th:for="password" class="form-label">비밀번호</label>
-            <input type="text" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요"
+            <input type="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요"
                    th:class="${#fields.hasErrors('password') ? 'form-control is-invalid' : 'form-control'}"/>
             <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}">
                 <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect password</p>
