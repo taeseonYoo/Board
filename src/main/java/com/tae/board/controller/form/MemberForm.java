@@ -19,7 +19,7 @@ public class MemberForm {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "{member.password.format}")
     private String password;
 
-    @NotEmpty(message = "{member.password.empty}")
+    @NotEmpty(message = "{member.email.empty}")
     @Email(message = "{member.email.format}")
     private String email;
 
