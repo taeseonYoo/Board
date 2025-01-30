@@ -13,7 +13,7 @@ import java.util.List;
 public class MemberInfoDto {
     private String name;
     private String email;
-    private LocalDateTime createdDate;
+    private String createdDate;
     private String nickname;
     private List<Post> posts;
     private List<Comments> comments;
@@ -21,7 +21,7 @@ public class MemberInfoDto {
     protected MemberInfoDto() {
     }
 
-    private MemberInfoDto(String name, String email, LocalDateTime createdDate,
+    private MemberInfoDto(String name, String email, String createdDate,
                           String nickname, List<Post> posts,List<Comments> comments) {
         this.name = name;
         this.email = email;
@@ -30,7 +30,7 @@ public class MemberInfoDto {
         this.posts = posts;
         this.comments = comments;
     }
-    public static MemberInfoDto createMemberInfo(String name, String email, LocalDateTime createdDate,
+    public static MemberInfoDto createMemberInfo(String name, String email, String createdDate,
                                                  String nickname,List<Post> posts,List<Comments> comments){
         return new MemberInfoDto(name, email, createdDate, nickname, posts, comments);
     }

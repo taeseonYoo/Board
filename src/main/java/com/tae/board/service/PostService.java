@@ -1,6 +1,7 @@
 package com.tae.board.service;
 
 
+import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.repository.PostRepository;
@@ -16,9 +17,12 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final MemberService memberService;
 
     @Transactional
-    public Long savePost(Post post) {
+    public Long write(Long memberId, String title,String content) {
+        Member member = memberService.findOne(memberId);
+        Post post = Post.createPost(member, title, content, member.getNickname());
         postRepository.save(post);
         return post.getId();
     }
