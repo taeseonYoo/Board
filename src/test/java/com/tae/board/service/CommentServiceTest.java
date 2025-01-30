@@ -125,9 +125,9 @@ class CommentServiceTest {
     }
 
     private Post createPost(Member member, String title, String content, String nickname) {
-        Post post = Post.createPost(member, title, content, nickname);
-        postService.savePost(post);
-        return post;
+
+        Long postId = postService.write(member.getId(), title, content);
+        return postService.findOne(postId);
     }
 
 }

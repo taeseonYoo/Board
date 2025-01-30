@@ -6,10 +6,15 @@
     <title>게시판</title>
     <!-- Bootstrap CSS -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        table th, table td {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<div th:replace="fragments/bodyHeader::bodyHeader"></div>
+<div th:replace="~{fragments/bodyHeader::bodyHeader}"></div>
 
 <!-- Main Content -->
 <div class="container mt-4">
@@ -17,17 +22,19 @@
         <h2>게시판 목록</h2>
         <a th:href="@{/board/write}" class="btn btn-primary">글 작성</a> <!-- 글 작성 버튼 -->
     </div>
-    <table class="table table-striped">
+    <table class="table">
         <thead>
         <tr>
-            <th scope="col">제목</th>
-            <th scope="col">작성자</th>
-            <th scope="col">작성일</th>
-            <th scope="col">조회수</th>
+            <th scope="col" class="col-1">번호</th>
+            <th scope="col" class="col-5">제목</th>
+            <th scope="col" class="col-3">작성자</th>
+            <th scope="col" class="col-2">작성일</th>
+            <th scope="col" class="col-1">조회수</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="post : ${posts}">
+            <td th:text="${post.id}">번호</td>
             <td th:text="${post.title}">게시글 제목</td>
             <td th:text="${post.writer}">작성자</td>
             <td th:text="${post.createdDate}">2025-01-09</td>

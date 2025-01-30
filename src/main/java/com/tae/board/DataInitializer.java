@@ -1,7 +1,6 @@
 package com.tae.board;
 
 import com.tae.board.controller.form.CommentForm;
-import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.service.CommentService;
@@ -29,20 +28,19 @@ public class DataInitializer {
                 password, "키노");
         memberService.join(member);
 
-        Post post = Post.createPost(member, "님들 그거 보셨음?", "내용은 뭔가요", member.getNickname());
-        postService.savePost(post);
+        Long postId = postService.write(member.getId(), "님들 그거 보셨음?", "내용은 뭔가요");
 
 
         CommentForm commentForm = new CommentForm();
         commentForm.setComment("아 그거 대박이에요 ㅋㅋㅋㅋ");
         commentForm.setMemberId(member.getId());
-        commentForm.setPostId(post.getId());
+        commentForm.setPostId(postId);
         commentService.saveComment(commentForm);
 
         CommentForm commentForm2 = new CommentForm();
         commentForm2.setComment("맞아요!");
         commentForm2.setMemberId(member.getId());
-        commentForm2.setPostId(post.getId());
+        commentForm2.setPostId(postId);
         commentService.saveComment(commentForm2);
 
     }

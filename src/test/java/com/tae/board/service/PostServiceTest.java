@@ -2,7 +2,6 @@ package com.tae.board.service;
 
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
-import com.tae.board.exception.PostNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -28,10 +26,10 @@ class PostServiceTest {
 
         //given
         Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member,"JPA","JPA에 대한 학습중 입니다.",member.getNickname());
 
         //when
-        Long savedPostId = postService.savePost(post);
+        Long savedPostId = postService.write(member.getId(),"JPA","JPA에 대한 학습중 입니다.");
+        Post post = postService.findOne(savedPostId);
         Post findPost = postService.findOne(savedPostId);
 
         //then
@@ -44,10 +42,10 @@ class PostServiceTest {
     public void 조회수_초기화_확인() {
         //given
         Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
 
         //when
-        Long savedPostId = postService.savePost(post);
+        Long savedPostId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
+        Post post = postService.findOne(savedPostId);
         Post findPost = postService.findOne(savedPostId);
         //then
         assertThat(post.getViewCount()).isEqualTo(0);
@@ -57,10 +55,10 @@ class PostServiceTest {
     public void 조회수_증가() {
         //given
         Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
+
 
         //when
-        Long savedPostId = postService.savePost(post);
+        Long savedPostId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
 
         postService.viewPost(savedPostId);
         postService.viewPost(savedPostId);
@@ -113,8 +111,7 @@ class PostServiceTest {
     public void 게시글_수정1() {
         //given
         Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
-        Long savedId = postService.savePost(post);
+        Long savedId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
 
         //when
         postService.update(savedId, "변경", "내용을 변경합니다.");
@@ -167,9 +164,9 @@ class PostServiceTest {
     }
 
     private Post createPost(Member member, String title, String content, String nickname) {
-        Post post = Post.createPost(member, title, content, nickname);
-        postService.savePost(post);
-        return post;
+
+        Long write = postService.write(member.getId(), title, content);
+        return postService.findOne(write);
     }
 
 }

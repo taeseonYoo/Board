@@ -1,6 +1,7 @@
 package com.tae.board.security;
 
 import com.tae.board.domain.Member;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
@@ -11,6 +12,10 @@ public class MemberDetail implements UserDetails {
 
     public MemberDetail(Member member) {
         this.member = member;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     //권한 목록을 반환한다.
