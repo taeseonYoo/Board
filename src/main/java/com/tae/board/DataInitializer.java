@@ -31,16 +31,10 @@ public class DataInitializer {
         Long postId = postService.write(member.getId(), "님들 그거 보셨음?", "내용은 뭔가요");
 
 
-        CommentForm commentForm = new CommentForm();
-        commentForm.setComment("아 그거 대박이에요 ㅋㅋㅋㅋ");
-        commentForm.setMemberId(member.getId());
-        commentForm.setPostId(postId);
+        CommentForm commentForm = CommentForm.of("아 그거 대박이에요 ㅋㅋㅋㅋ", member.getId(), postId);
         commentService.saveComment(commentForm);
 
-        CommentForm commentForm2 = new CommentForm();
-        commentForm2.setComment("맞아요!");
-        commentForm2.setMemberId(member.getId());
-        commentForm2.setPostId(postId);
+        CommentForm commentForm2 = CommentForm.of("맞아요!", member.getId(),postId);
         commentService.saveComment(commentForm2);
 
     }
