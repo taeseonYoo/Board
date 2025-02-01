@@ -5,14 +5,6 @@
     <title>마이페이지</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            margin-top: 50px;
-        }
-
         .user-info {
             background-color: #ffffff;
             padding: 20px;
@@ -40,11 +32,11 @@
         }
     </style>
 </head>
-<body>
+<body style="background-color: #f8f9fa">
 
-<div th:replace="fragments/bodyHeader::bodyHeader"></div>
+<div th:replace="~{fragments/bodyHeader::bodyHeader}"></div>
 
-<div class="container mt-5">
+<div class="container mt-5" style="margin-top: 50px">
     <!-- 개인 정보 -->
     <div class="section-title">내 정보</div>
     <div class="user-info mb-4">
@@ -57,7 +49,7 @@
 
     <!-- 작성한 게시글 -->
     <div class="section-title">작성한 게시글</div>
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th scope="col" class="col-9">제목</th>
@@ -67,7 +59,7 @@
         </thead>
         <tbody>
         <tr th:each="post : ${memberInfo.posts}">
-            <td><a th:href="@{/board/{id}(id=${post.id})}" class="text-decoration-none" th:text="${post.title}">게시글 제목</a></td>
+            <td><a th:href="@{/board/post/{id}(id=${post.id})}" class="text-decoration-none" th:text="${post.title}">게시글 제목</a></td>
             <td th:text="${post.createdDate}">2025-01-09</td>
             <td th:text="${post.viewCount}">조회수</td>
         </tr>
@@ -78,7 +70,7 @@
     <div class="section-title">작성한 댓글</div>
     <ul class="list-group">
         <li class="list-group-item" th:each="comment : ${memberInfo.comments}">
-            <a th:href="@{/board/{id}(id=${comment.post.id})}" class="text-decoration-none">
+            <a th:href="@{/board/post/{id}(id=${comment.post.id})}" class="text-decoration-none">
                 <div th:text="${comment.comment}">댓글 내용</div>
                 <div class="small" th:text="'['+${comment.post.title}+']'">게시글 제목</div>
             </a>

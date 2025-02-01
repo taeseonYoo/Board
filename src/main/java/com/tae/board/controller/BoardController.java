@@ -1,10 +1,10 @@
 package com.tae.board.controller;
 
+import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.PostForm;
-import com.tae.board.domain.Member;
+import com.tae.board.domain.Comments;
 import com.tae.board.domain.Post;
 import com.tae.board.security.MemberDetail;
-import com.tae.board.service.MemberService;
 import com.tae.board.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -23,8 +24,8 @@ import java.util.List;
 public class BoardController {
 
     private final PostService postService;
-    private final MemberService memberService;
 
+    //메인 화면
     @GetMapping({"/", "/board"})
     public String home(@AuthenticationPrincipal MemberDetail memberDetail,Model model) {
         List<Post> posts = postService.findPosts();
@@ -37,10 +38,35 @@ public class BoardController {
         return "board";
     }
 
+    //게시글 생성 페이지
     @GetMapping("/board/write")
     public String createForm(@ModelAttribute PostForm postForm) {
 
         return "post/createPostForm";
+    }
+
+    //게시글 조회 페이지
+    @GetMapping("/board/post/{postId}")
+    public String post(@PathVariable Long postId, @ModelAttribute CommentForm commentForm, Model model) {
+
+        Post post = postService.findOne(postId);
+        model.addAttribute("post",post);
+
+        List<Comments> comments = post.getComments();
+        model.addAttribute("comments", comments);
+
+        return "post/postForm";
+    }
+
+    @GetMapping("/board/post/{postId}/edit")
+    public String edit(@PathVariable Long postId, Model model) {
+
+        Post post = postService.findOne(postId);
+        PostForm postForm = PostForm.from(post);
+
+        model.addAttribute("postForm", postForm);
+
+        return "post/editPostForm";
     }
 
     @PostMapping("/board/write")
