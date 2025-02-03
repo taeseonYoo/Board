@@ -75,12 +75,9 @@ public class BoardController {
         if (bindingResult.hasErrors()) {
             return "post/createPostForm";
         }
-        postService.write(memberDetail.getMember().getId(), postForm.getTitle(), postForm.getContent());
+        Long postId = postService.write(memberDetail.getMember().getId(), postForm.getTitle(), postForm.getContent());
 
-        /**
-         * 작성하고 게시글 화면으로 가는 게 좋겠다.
-         */
-        return "redirect:/board";
+        return "redirect:/board/post/"+postId;
     }
 
 }

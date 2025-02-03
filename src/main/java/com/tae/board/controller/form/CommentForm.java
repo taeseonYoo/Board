@@ -17,7 +17,7 @@ public class CommentForm {
         this.postId = postId;
         this.memberId = memberId;
     }
-    public static CommentForm of(String comment, Long postId, Long memberId) {
+    public static CommentForm from(String comment, Long postId, Long memberId) {
         return new CommentForm(comment, postId, memberId);
     }
 }
