@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,7 +47,7 @@ public class BoardController {
     @GetMapping("/board/post/{postId}")
     public String post(@PathVariable Long postId, @ModelAttribute CommentForm commentForm, Model model) {
 
-        Post post = postService.findOne(postId);
+        Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
 
         List<Comments> comments = post.getComments();
@@ -79,13 +80,12 @@ public class BoardController {
 
     //게시글 수정
     @PostMapping("/board/post/{postId}")
-    public String update(@PathVariable Long postId,
+    public String update(@PathVariable Long postId, @AuthenticationPrincipal MemberDetail memberDetail,
                          @Valid PostForm postForm, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return "post/editPostForm";
         }
-        Long updateId = postService.update(postId, postForm.getTitle(), postForm.getContent());
+        Long updateId = postService.update(postId,memberDetail.getMember().getId(),postForm.getTitle(), postForm.getContent());
 
         return "redirect:/board/post/" + updateId;
     }
@@ -93,10 +93,8 @@ public class BoardController {
 
     @PostMapping("/board/post/{postId}/delete")
     public String delete(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable Long postId) {
-        //권한 확인
 
-        //삭제
-        postService.deletePost(postId);
+        postService.deletePost(postId,memberDetail.getMember().getId());
 
         return "redirect:/board";
     }

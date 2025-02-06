@@ -1,7 +1,11 @@
 package com.tae.board.service;
 
+import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.exception.UnauthorizedAccessException;
+import com.tae.board.repository.PostRepository;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,152 +25,129 @@ class PostServiceTest {
     @Autowired
     MemberService memberService;
 
+
+
     @Test
     public void 게시글_작성() {
 
         //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
+        String title = "오늘의 첫 게시물";
+        String content = "반갑습니다!";
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
 
         //when
-        Long savedPostId = postService.write(member.getId(),"JPA","JPA에 대한 학습중 입니다.");
-        Post post = postService.findOne(savedPostId);
-        Post findPost = postService.findOne(savedPostId);
+        Post post = createPost(member, title, content);
 
         //then
-        Assertions.assertEquals(post.getContent(),findPost.getContent(),"작성한 게시글의 내용이 일치하는 지 확인");
-        Assertions.assertEquals(post.getTitle(),findPost.getTitle(),"작성한 게시글의 제목이 일치하는 지 확인");
-        Assertions.assertEquals(post.getWriter(), findPost.getWriter(), "작성자가 일치하는 지 확인");
+        assertThat(post.getTitle()).isEqualTo(title);
+        assertThat(post.getContent()).isEqualTo(content);
+
+        //then-연관관계 체크
+        assertThat(post.getMember()).isEqualTo(member);
+        Assertions.assertTrue(member.getPosts().contains(post));
     }
-
-    @Test
-    public void 조회수_초기화_확인() {
-        //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-
-        //when
-        Long savedPostId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
-        Post post = postService.findOne(savedPostId);
-        Post findPost = postService.findOne(savedPostId);
-        //then
-        assertThat(post.getViewCount()).isEqualTo(0);
-    }
-
     @Test
     public void 조회수_증가() {
-        //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
 
+        //given
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
+        Post post = createPost(member, "조회 수 증가한다!", "얼마나 증가할까?");
+        int target = 54321;
 
         //when
-        Long savedPostId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
-
-        postService.viewPost(savedPostId);
-        postService.viewPost(savedPostId);
-
-        //then
-        assertThat(postService.findOne(savedPostId).getViewCount()).isEqualTo(2);
-    }
-
-
-    @Test
-    public void 모든_게시글_검색() {
-        //given
-        Member member1 = createMember("tae", "kino@spring.com", "123456", "kino");
-        createPost(member1, "JPA", "JPA에 대한 학습중 입니다.", member1.getNickname());
-        createPost(member1, "JPA2", "JPA2에 대한 학습중 입니다.", member1.getNickname());
-        createPost(member1, "JPA3", "JPA2에 대한 학습중 입니다.", member1.getNickname());
-
-
-
-        Member member2 = createMember("mario", "mario@spring.com", "987654", "mario");
-        createPost(member2, "점심 메뉴 추천!", "점심에 떡볶이 먹으렴", member2.getNickname());
-        createPost(member2, "저녁 메뉴 추천!", "저녁엔 치킨 먹으렴", member2.getNickname());
-
-        //when
-        int num = 0;
-        List<Member> members = memberService.findMembers();
-        for (Member member : members) {
-            num += postService.findPostsByMember(member.getId()).size();
+        for (int i = 0; i < target; i++) {
+            postService.viewPost(post.getId());
         }
 
-        //then
-        assertThat(postService.findPosts().size()).isEqualTo(num);
-    }
-
-    @Test
-    public void 회원별_게시글_검색() {
-        //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post1 = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
-        Post post2 = createPost(member, "JPA2", "JPA2에 대한 학습중 입니다.", member.getNickname());
-        Post post3 = createPost(member, "JPA3", "JPA2에 대한 학습중 입니다.", member.getNickname());
-
-        //when
-        List<Post> findMembers = postService.findPostsByMember(member.getId());
-        //then
-        assertThat(findMembers.size()).isEqualTo(3);
-    }
-
-    @Test
-    public void 게시글_수정1() {
-        //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Long savedId = postService.write(member.getId(),"JPA", "JPA에 대한 학습중 입니다.");
-
-        //when
-        postService.update(savedId, "변경", "내용을 변경합니다.");
 
         //then
-        assertThat(postService.findOne(savedId).getTitle()).isEqualTo("변경");
-    }
-
-
-    @Test
-    public void 게시글_삭제() {
-        //given
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member, "JPA", "JPA에 대한 학습중 입니다.", member.getNickname());
-
-        //when
-        postService.deletePost(post.getId());
-
-        //then
-        assertThat(postService.findPostsByMember(member.getId()).size()).isEqualTo(0);
+        assertThat(postService.findOne(post.getId()).getViewCount()).isEqualTo(target);
     }
 
     @Test
     public void 게시글_수정() {
         //given
-        String title = "변경 전";
-        String content = "변경 전 게시글 내용입니다";
-        String updateTitle = "변경 후";
-        String updateContent = "변경 후 게시글 내용입니다";
-
-        Member member = createMember("tae", "kino@spring.com", "123456", "kino");
-        Post post = createPost(member, title, content, member.getNickname());
-        //then
-        Long updateId = postService.update(post.getId(), updateTitle, updateContent);
-        Post updatedPost = postService.findOne(updateId);
+        String title = "오늘의 첫 게시물";
+        String content = "반갑습니다!";
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
+        Post post = createPost(member, title, content);
 
         //when
-        assertThat(updatedPost.getTitle()).isEqualTo(updateTitle);
-        assertThat(updatedPost.getContent()).isEqualTo(updateContent);
+        String modifyTitle = "두번째 게시물 입니다.";
+        String modifyContent = "방가방가";
+        Long updateId = postService.update(post.getId(), member.getId(), modifyTitle, modifyContent);
 
-        assertThat(updatedPost.getTitle()).isNotEqualTo(title);
-        assertThat(updatedPost.getContent()).isNotEqualTo(content);
+
+        //then
+        assertThat(postService.findOne(updateId).getTitle()).isEqualTo(modifyTitle);
+        assertThat(postService.findOne(updateId).getContent()).isEqualTo(modifyContent);
+    }
+    @Test
+    public void 게시글_수정_실패() {
+        //given
+        String title = "오늘의 첫 게시물";
+        String content = "반갑습니다!";
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
+
+
+        //when
+        String modifyTitle = "두번째 게시물 입니다.";
+        String modifyContent = "방가방가";
+        Post post = createPost(member, title, content);
+        Member fake = createMember("가짜 테스트", "sp@spring.com", "123456", "fake");
+
+
+        //then
+        assertThatThrownBy(() -> {
+            postService.update(post.getId(), fake.getId(), modifyTitle, modifyContent);
+        }).isInstanceOf(UnauthorizedAccessException.class)
+                .hasMessage("게시글 삭제 권한이 없습니다.");
+
+    }
+    @Test
+    public void 게시글_삭제() {
+        //given
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
+        Post post = createPost(member, "오늘의 첫 게시물", "반갑습니다!");
+
+        //when
+        postService.deletePost(post.getId(), member.getId());
+
+        //then
+        assertThat(postService.findPostsByMember(member.getId())).isEmpty();
+        Assertions.assertFalse(member.getPosts().contains(post));
+
+    }
+    @Test
+    public void 게시글_삭제_실패() {
+        //given
+        Member member = createMember("테스터", "test@spring.com", "123456", "test");
+        Post post = createPost(member, "오늘의 첫 게시물", "반갑습니다!");
+        Member fake = createMember("가짜 테스트", "sp@spring.com", "123456", "fake");
+
+
+        //when & then
+        assertThatThrownBy(() -> {
+            postService.deletePost(post.getId(), fake.getId());
+        }).isInstanceOf(UnauthorizedAccessException.class)
+                .hasMessage("게시글 삭제 권한이 없습니다.");
+
+        //then - 연관관계 체크
+        List<Post> postsByMember = postService.findPostsByMember(member.getId());
+        Assertions.assertTrue(postsByMember.contains(post));
+        assertThat(post.getMember()).isEqualTo(member);
     }
 
 
     private Member createMember(String name, String email, String password, String nickname) {
         Member member = Member.createMember(name, email, password, nickname);
-        memberService.join(member);
-        return member;
+        Long memberId = memberService.join(member);
+        return memberService.findOne(memberId);
     }
 
-    private Post createPost(Member member, String title, String content, String nickname) {
-
-        Long write = postService.write(member.getId(), title, content);
-        return postService.findOne(write);
+    private Post createPost(Member member, String title, String content) {
+        Long postId = postService.write(member.getId(), title, content);
+        return postService.findOne(postId);
     }
 
 }
