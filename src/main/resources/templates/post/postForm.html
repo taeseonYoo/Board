@@ -31,10 +31,12 @@
     </form>
     <div class="d-flex">
         <a th:href="@{/board}" class="btn btn-secondary me-1">목록으로</a>
-        <a th:href="@{/board/post/{id}/edit(id=${post.id})}" class="btn btn-primary me-1">수정</a>
-        <form th:action="@{/board/post/{id}/delete(id=${post.id})}" method="post">
+        <a th:href="@{/board/post/{id}/edit(id=${post.id})}" th:if="${#authentication.principal.username} == ${post.member.email}"
+           class="btn btn-primary me-1">수정</a>
+        <form th:action="@{/board/post/{id}/delete(id=${post.id})}" method="post" th:if="${#authentication.principal.username} == ${post.member.email}">
             <button type="submit" class="btn btn-danger me-1">삭제</button>
         </form>
+
     </div>
 
 
