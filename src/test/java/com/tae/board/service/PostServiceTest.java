@@ -25,8 +25,6 @@ class PostServiceTest {
     @Autowired
     MemberService memberService;
 
-
-
     @Test
     public void 게시글_작성() {
 
@@ -37,13 +35,14 @@ class PostServiceTest {
 
         //when
         Post post = createPost(member, title, content);
+        Post savedPost = postService.findOne(post.getId());
 
         //then
-        assertThat(post.getTitle()).isEqualTo(title);
-        assertThat(post.getContent()).isEqualTo(content);
+        assertThat(savedPost.getTitle()).isEqualTo(title);
+        assertThat(savedPost.getContent()).isEqualTo(content);
 
         //then-연관관계 체크
-        assertThat(post.getMember()).isEqualTo(member);
+        assertThat(savedPost.getMember()).isEqualTo(member);
         Assertions.assertTrue(member.getPosts().contains(post));
     }
     @Test
@@ -58,10 +57,11 @@ class PostServiceTest {
         for (int i = 0; i < target; i++) {
             postService.viewPost(post.getId());
         }
+        Post savedPost = postService.findOne(post.getId());
 
 
         //then
-        assertThat(postService.findOne(post.getId()).getViewCount()).isEqualTo(target);
+        assertThat(savedPost.getViewCount()).isEqualTo(target);
     }
 
     @Test
@@ -76,11 +76,11 @@ class PostServiceTest {
         String modifyTitle = "두번째 게시물 입니다.";
         String modifyContent = "방가방가";
         Long updateId = postService.update(post.getId(), member.getId(), modifyTitle, modifyContent);
-
+        Post savedPost = postService.findOne(updateId);
 
         //then
-        assertThat(postService.findOne(updateId).getTitle()).isEqualTo(modifyTitle);
-        assertThat(postService.findOne(updateId).getContent()).isEqualTo(modifyContent);
+        assertThat(savedPost.getTitle()).isEqualTo(modifyTitle);
+        assertThat(savedPost.getContent()).isEqualTo(modifyContent);
     }
     @Test
     public void 게시글_수정_실패() {
@@ -88,12 +88,11 @@ class PostServiceTest {
         String title = "오늘의 첫 게시물";
         String content = "반갑습니다!";
         Member member = createMember("테스터", "test@spring.com", "123456", "test");
-
-
-        //when
         String modifyTitle = "두번째 게시물 입니다.";
         String modifyContent = "방가방가";
         Post post = createPost(member, title, content);
+
+        //when
         Member fake = createMember("가짜 테스트", "sp@spring.com", "123456", "fake");
 
 
@@ -112,9 +111,10 @@ class PostServiceTest {
 
         //when
         postService.deletePost(post.getId(), member.getId());
+        List<Post> allPosts = postService.findPosts();
 
         //then
-        assertThat(postService.findPostsByMember(member.getId())).isEmpty();
+        Assertions.assertFalse(allPosts.contains(post));
         Assertions.assertFalse(member.getPosts().contains(post));
 
     }
@@ -133,8 +133,7 @@ class PostServiceTest {
                 .hasMessage("게시글 삭제 권한이 없습니다.");
 
         //then - 연관관계 체크
-        List<Post> postsByMember = postService.findPostsByMember(member.getId());
-        Assertions.assertTrue(postsByMember.contains(post));
+        Assertions.assertTrue(member.getPosts().contains(post));
         assertThat(post.getMember()).isEqualTo(member);
     }
 
