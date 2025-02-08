@@ -12,12 +12,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +25,7 @@ public class BoardController {
 
     //메인 화면
     @GetMapping({"/", "/board"})
-    public String home(@AuthenticationPrincipal MemberDetail memberDetail,Model model) {
+    public String home(@AuthenticationPrincipal MemberDetail memberDetail, Model model) {
         List<Post> posts = postService.findPosts();
 
         if (memberDetail != null) {
@@ -49,8 +47,8 @@ public class BoardController {
     @GetMapping("/board/post/{postId}")
     public String post(@PathVariable Long postId, @ModelAttribute CommentForm commentForm, Model model) {
 
-        Post post = postService.findOne(postId);
-        model.addAttribute("post",post);
+        Post post = postService.viewPost(postId);
+        model.addAttribute("post", post);
 
         List<Comments> comments = post.getComments();
         model.addAttribute("comments", comments);
@@ -77,7 +75,27 @@ public class BoardController {
         }
         Long postId = postService.write(memberDetail.getMember().getId(), postForm.getTitle(), postForm.getContent());
 
-        return "redirect:/board/post/"+postId;
+        return "redirect:/board/post/" + postId;
     }
 
+    //게시글 수정
+    @PostMapping("/board/post/{postId}")
+    public String update(@PathVariable Long postId, @AuthenticationPrincipal MemberDetail memberDetail,
+                         @Valid PostForm postForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "post/editPostForm";
+        }
+        Long updateId = postService.update(postId,memberDetail.getMember().getId(),postForm.getTitle(), postForm.getContent());
+
+        return "redirect:/board/post/" + updateId;
+    }
+
+
+    @DeleteMapping("/board/post/{postId}/delete")
+    public String delete(@PathVariable Long postId, @AuthenticationPrincipal MemberDetail memberDetail) {
+
+        postService.deletePost(postId, memberDetail.getMember().getId());
+
+        return "redirect:/board";
+    }
 }

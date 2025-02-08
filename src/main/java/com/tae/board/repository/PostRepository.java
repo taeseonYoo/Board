@@ -1,5 +1,6 @@
 package com.tae.board.repository;
 
+import com.tae.board.domain.Comments;
 import com.tae.board.domain.Post;
 import com.tae.board.exception.PostNotFoundException;
 import jakarta.persistence.EntityManager;
@@ -24,13 +25,7 @@ public class PostRepository {
     //게시글 삭제
     public void delete(Long postId) {
         Post post = em.find(Post.class, postId);
-
-        if (post == null) {
-            throw new PostNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-        post.removeMember();
         em.remove(post);
-
     }
     //게시글 단건 검색
     public Post findOne(Long id) {

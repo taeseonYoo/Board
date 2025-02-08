@@ -22,10 +22,6 @@ public class CommentRepository {
     //댓글 삭제
     public void delete(Long commentId) {
         Comments comment = em.find(Comments.class, commentId);
-        if (comment == null) {
-            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-        comment.removePost();
         em.remove(comment);
     }
 
