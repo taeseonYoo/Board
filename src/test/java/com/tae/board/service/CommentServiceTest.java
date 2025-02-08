@@ -4,6 +4,7 @@ import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,8 @@ class CommentServiceTest {
     private MemberService memberService;
     @Autowired
     private PostService postService;
+    @Autowired
+    EntityManager em;
 
 
     @Test
@@ -56,17 +59,20 @@ class CommentServiceTest {
         Member member = createMember("SOO", "SOO@spring.jpa", "1234", "SOON");
         Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?", member.getNickname());
         Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
+        Long commentId2 = createComments("ㅋㅋㅋ SpringJPA에 대해서 해주세요", member, post);
 
         //when
+        Comments byId = commentService.findById(commentId);
+        byId.removePost();
         commentService.deleteComments(commentId);
+        em.flush();
+        em.clear();
         List<Comments> allByPost = commentService.findAllByPost(post.getId());
         List<Comments> allByMember = commentService.findAllByMember(member.getId());
 
         //then
-        assertThat(allByMember.size()).isEqualTo(0);
-        assertThat(allByPost.size()).isEqualTo(0);
-
-        assertThat(post.getComments()).isEmpty();
+        assertThat(allByMember.size()).isEqualTo(1);
+        assertThat(allByPost.size()).isEqualTo(1);
 
     }
 
@@ -96,9 +102,10 @@ class CommentServiceTest {
 
         //when
         CommentForm commentForm = new CommentForm();
-        commentForm.setMemberId(member.getId());
-        commentForm.setPostId(post.getId());
-        commentForm.setComment("Spring 말고 다른걸로 합시다.");
+
+//        commentForm.setMemberId(member.getId());
+//        commentForm.setPostId(post.getId());
+//        commentForm.setComment("Spring 말고 다른걸로 합시다.");
         commentService.update(commentId, commentForm);
         //then
 
@@ -110,10 +117,7 @@ class CommentServiceTest {
 
     private Long createComments(String comment, Member member,Post post) {
 
-        CommentForm commentForm = new CommentForm();
-        commentForm.setComment(comment);
-        commentForm.setMemberId(member.getId());
-        commentForm.setPostId(post.getId());
+        CommentForm commentForm = CommentForm.from(comment, post.getId(), member.getId());
 
         return commentService.saveComment(commentForm);
     }

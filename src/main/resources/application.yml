@@ -13,5 +13,9 @@ spring:
         format_sql: true
   messages:
     basename: messages
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging.level:
   org.hibernate.SQL: debug

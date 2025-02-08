@@ -3,10 +3,6 @@ package com.tae.board.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -32,7 +28,7 @@ public class Comments extends BaseTimeEntity {
     }
 
     public Comments(String comment, Member member, Post post) {
-        addComments(post);
+        setPost(post);
         this.member = member;
         this.comment = comment;
     }
@@ -43,7 +39,7 @@ public class Comments extends BaseTimeEntity {
 
 
     //연관관계 메서드
-    public void addComments(Post post) {
+    public void setPost(Post post) {
         post.getComments().add(this);
         this.post = post;
     }
