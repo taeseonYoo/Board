@@ -91,10 +91,10 @@ public class BoardController {
     }
 
 
-    @PostMapping("/board/post/{postId}/delete")
-    public String delete(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable Long postId) {
+    @DeleteMapping("/board/post/{postId}/delete")
+    public String delete(@PathVariable Long postId, @AuthenticationPrincipal MemberDetail memberDetail) {
 
-        postService.deletePost(postId,memberDetail.getMember().getId());
+        postService.deletePost(postId, memberDetail.getMember().getId());
 
         return "redirect:/board";
     }
