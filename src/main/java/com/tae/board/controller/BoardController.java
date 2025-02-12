@@ -4,10 +4,15 @@ import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.PostForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.PageInfoDto;
 import com.tae.board.security.MemberDetail;
 import com.tae.board.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,16 +28,24 @@ public class BoardController {
 
     private final PostService postService;
 
-    //메인 화면
     @GetMapping({"/", "/board"})
-    public String home(@AuthenticationPrincipal MemberDetail memberDetail, Model model) {
-        List<Post> posts = postService.findPosts();
+    public String home(@AuthenticationPrincipal MemberDetail memberDetail, Model model,
+                       @PageableDefault(page = 0,size = 10) Pageable pageable) {
 
         if (memberDetail != null) {
             model.addAttribute("nickname", memberDetail.getNickname());
         }
 
-        model.addAttribute("posts", posts);
+        Page<Post> posts = postService.findPagePosts(pageable);
+
+        int limit = 5;
+        int startPage = getStartPage(pageable, limit);
+        int endPage = getEndPage(startPage, limit, posts.getTotalPages());
+
+        PageInfoDto pageInfo = PageInfoDto.createPageInfo(startPage, endPage, pageable.getPageNumber(), posts.getTotalPages(), posts);
+
+        model.addAttribute("pageInfo", pageInfo);
+
         return "board";
     }
 
@@ -97,5 +110,13 @@ public class BoardController {
         postService.deletePost(postId, memberDetail.getMember().getId());
 
         return "redirect:/board";
+    }
+
+    private static int getEndPage(int startPage, int limit, int totalPages) {
+        return Math.min(startPage + limit - 1, totalPages);
+    }
+
+    private static int getStartPage(Pageable pageable, int limit) {
+        return ((pageable.getPageNumber() / limit) * limit) + 1;
     }
 }
