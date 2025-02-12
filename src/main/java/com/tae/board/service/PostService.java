@@ -8,6 +8,8 @@ import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,10 @@ public class PostService {
         post.updatePost(title, content);
         return post.getId();
     }
+    public Page<Post> findPagePosts(Pageable pageable) {
+        return postRepository.findPostsWithPaging(pageable);
+    }
+
     @Transactional
     public Post viewPost(Long postId) {
         Post post = postRepository.findOne(postId);
