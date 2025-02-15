@@ -6,6 +6,7 @@ import com.tae.board.exception.PostNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -53,7 +54,7 @@ public class PostRepository {
 
         long totalCount = em.createQuery("select count(p) from Post p", Long.class).getSingleResult();
 
-        return new org.springframework.data.domain.PageImpl<>(posts, pageable, totalCount);
+        return new PageImpl<>(posts, pageable, totalCount);
     }
 
 
