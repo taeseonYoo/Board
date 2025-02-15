@@ -5,6 +5,9 @@ import com.tae.board.domain.Post;
 import com.tae.board.exception.PostNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,6 +44,17 @@ public class PostRepository {
         return em.createQuery("select p from Post p where p.member.id =:memberId",Post.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
+    }
+
+    public Page<Post> findPostsWithPaging(Pageable pageable) {
+        List<Post> posts = em.createQuery("select p from Post p order by p.id desc", Post.class)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
+
+        long totalCount = em.createQuery("select count(p) from Post p", Long.class).getSingleResult();
+
+        return new PageImpl<>(posts, pageable, totalCount);
     }
 
 

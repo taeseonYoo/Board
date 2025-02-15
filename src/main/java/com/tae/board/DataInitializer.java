@@ -29,6 +29,10 @@ public class DataInitializer {
 
         Long postId = postService.write(member.getId(), "님들 그거 보셨음?", "내용은 뭔가요");
 
+        for (int i = 1; i < 101; i++) {
+            postService.write(member.getId(), "게시글" + i, "내용" + i);
+        }
+
 
         CommentForm commentForm = CommentForm.from("아 그거 대박이에요 ㅋㅋㅋㅋ", member.getId(), postId);
         commentService.saveComment(commentForm);
