@@ -4,7 +4,6 @@ import com.tae.board.domain.Post;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 @Getter
 public class PageInfoDto {
