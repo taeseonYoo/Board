@@ -1,23 +1,16 @@
 package com.tae.board.controller.form;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
 public class CommentForm {
-
+    @NotEmpty
+    @Size(max = 100)
     private String comment;
-    private Long postId;
-    private Long memberId;
 
-    public CommentForm() {
-    }
-
-    protected CommentForm(String comment, Long postId, Long memberId) {
+    protected CommentForm(String comment) {
         this.comment = comment;
-        this.postId = postId;
-        this.memberId = memberId;
-    }
-    public static CommentForm from(String comment, Long postId, Long memberId) {
-        return new CommentForm(comment, postId, memberId);
     }
 }

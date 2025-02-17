@@ -13,7 +13,7 @@ public class Comments extends BaseTimeEntity {
     @Column(name = "comments_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(length = 100,nullable = false)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

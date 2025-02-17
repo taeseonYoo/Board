@@ -4,6 +4,7 @@ import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.CommentSaveDto;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,12 +102,12 @@ class CommentServiceTest {
         Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
 
         //when
-        CommentForm commentForm = new CommentForm();
+//        CommentForm commentForm = new CommentForm();
 
 //        commentForm.setMemberId(member.getId());
 //        commentForm.setPostId(post.getId());
 //        commentForm.setComment("Spring 말고 다른걸로 합시다.");
-        commentService.update(commentId, commentForm);
+//        commentService.update(commentId, commentForm);
         //then
 
         assertThat(commentService.findById(commentId).getComment()).isEqualTo("Spring 말고 다른걸로 합시다.");
@@ -117,9 +118,9 @@ class CommentServiceTest {
 
     private Long createComments(String comment, Member member,Post post) {
 
-        CommentForm commentForm = CommentForm.from(comment, post.getId(), member.getId());
+        CommentSaveDto commentSaveDto = CommentSaveDto.createCommentSaveDto(comment, member.getId(), post.getId());
 
-        return commentService.saveComment(commentForm);
+        return commentService.saveComment(commentSaveDto);
     }
 
     private Member createMember(String name, String email, String password, String nickname) {

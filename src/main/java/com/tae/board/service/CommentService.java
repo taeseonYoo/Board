@@ -4,6 +4,7 @@ import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.CommentSaveDto;
 import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
@@ -23,12 +24,12 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long saveComment(CommentForm commentForm) {
+    public Long saveComment(CommentSaveDto commentSaveDto) {
 
-        Post post = postRepository.findOne(commentForm.getPostId());
-        Member member = memberRepository.findOne(commentForm.getMemberId());
+        Post post = postRepository.findOne(commentSaveDto.getPostId());
+        Member member = memberRepository.findOne(commentSaveDto.getMemberId());
 
-        Comments comments = Comments.createComments(commentForm.getComment(), member, post);
+        Comments comments = Comments.createComments(commentSaveDto.getComment(), member, post);
 
         commentRepository.save(comments);
         return comments.getId();
