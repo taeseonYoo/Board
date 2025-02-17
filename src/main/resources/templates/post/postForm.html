@@ -41,8 +41,9 @@
 
 
     <div class="card mt-5">
-        <form th:action="@{/board/comment}" method="post" th:object="${commentForm}" class="card-body mb-3">
-            <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
+        <form th:action="@{/board/post/{id}/comment(id=${post.id})}" method="post" th:object="${commentForm}" class="card-body mb-3">
+            <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="댓글을 입력하세요"
+                      th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
             <div class="d-flex justify-content-end mt-2">
                 <button type="submit" class="btn btn-primary">등록</button>
             </div>
