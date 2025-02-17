@@ -65,7 +65,7 @@ class CommentServiceTest {
         //when
         Comments byId = commentService.findById(commentId);
         byId.removePost();
-        commentService.deleteComments(commentId);
+        commentService.deleteComments(commentId, post.getId(), member.getId());
         em.flush();
         em.clear();
         List<Comments> allByPost = commentService.findAllByPost(post.getId());
@@ -87,7 +87,7 @@ class CommentServiceTest {
         Long commentId2 = createComments("저는 반대입니다.", member1, post);
 
         //when
-        commentService.deleteComments(commentId);
+        commentService.deleteComments(commentId, post.getId(), member.getId());
 
 
         //then

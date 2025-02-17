@@ -5,6 +5,9 @@ import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.dto.CommentSaveDto;
+import com.tae.board.exception.CommentNotFoundException;
+import com.tae.board.exception.PostNotFoundException;
+import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
@@ -41,7 +44,22 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComments(Long commentId) {
+    public void deleteComments(Long commentId, Long postId, Long currentMemberId) {
+
+        Post post = postRepository.findOne(postId);
+        if (post == null) {
+            throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+        Comments comment = commentRepository.findById(commentId);
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
+        }
+
+        comment.removePost();
+
         commentRepository.delete(commentId);
     }
 
