@@ -33,11 +33,13 @@
         <a th:href="@{/board}" class="btn btn-secondary me-1">목록으로</a>
         <th:block th:if="${#authentication.principal.username == post.member.email}">
             <a th:href="@{/board/post/{id}/edit(id=${post.id})}" class="btn btn-primary me-1">수정</a>
-            <button type="button" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                삭제
-            </button>
+            <form th:action="@{/board/post/{id}/delete(id=${post.id})}"
+                  th:method="delete" onsubmit="return confirmDelete();">
+                <button type="submit" class="btn btn-danger me-1">삭제</button>
+            </form>
         </th:block>
     </div>
+
 
 
     <div class="card mt-5">
@@ -63,8 +65,13 @@
                             <strong>⋯</strong>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">신고</a></li>
-                            <li><a class="dropdown-item" href="#">삭제</a></li>
+                            <li><a class="dropdown-item">수정</a></li>
+                            <li>
+                                <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
+                                      th:method="delete" onsubmit="return confirmDelete();">
+                                    <button type="submit" class="dropdown-item">삭제</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -77,27 +84,12 @@
 
     </div>
 
-<!-- 삭제 확인 모달 -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">삭제</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                정말로 삭제하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <form th:action="@{/board/post/{id}/delete(id=${post.id})}" th:method="delete">
-                    <button type="submit" class="btn btn-danger">삭제</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
+<script>
+    function confirmDelete() {
+        return confirm("정말로 삭제하시겠습니까?");
+    }
+</script>
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

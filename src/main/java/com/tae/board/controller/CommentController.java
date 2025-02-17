@@ -14,19 +14,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
+@RequestMapping("/board/post")
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
     private final PostService postService;
 
-    @PostMapping("/board/post/{postId}/comment")
+    @PostMapping("/{postId}/comment")
     public String create(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable Long postId,
                          @Valid CommentForm commentForm, BindingResult bindingResult,Model model) {
 
@@ -39,6 +39,14 @@ public class CommentController {
         }
         CommentSaveDto commentSaveDto = CommentSaveDto.createCommentSaveDto(commentForm.getComment(), memberDetail.getMember().getId(), postId);
         commentService.saveComment(commentSaveDto);
+
+        return "redirect:/board/post/" + postId;
+    }
+
+    @DeleteMapping("/{postId}/comment/{commentId}")
+    public String delete(@PathVariable Long postId, @PathVariable Long commentId,
+                         @AuthenticationPrincipal MemberDetail memberDetail) {
+        commentService.deleteComments(commentId, postId, memberDetail.getMember().getId());
 
         return "redirect:/board/post/" + postId;
     }
