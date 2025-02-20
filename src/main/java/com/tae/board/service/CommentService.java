@@ -1,10 +1,9 @@
 package com.tae.board.service;
 
-import com.tae.board.controller.form.CommentForm;
+import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
-import com.tae.board.dto.CommentSaveDto;
 import com.tae.board.exception.CommentNotFoundException;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.exception.UnauthorizedAccessException;
@@ -27,20 +26,20 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long saveComment(CommentSaveDto commentSaveDto) {
+    public Long saveComment(Long postId,Long memberId,String comment) {
 
-        Post post = postRepository.findOne(commentSaveDto.getPostId());
-        Member member = memberRepository.findOne(commentSaveDto.getMemberId());
+        Post post = postRepository.findOne(postId);
+        Member member = memberRepository.findOne(memberId);
 
-        Comments comments = Comments.createComments(commentSaveDto.getComment(), member, post);
+        Comments comments = Comments.createComments(comment, member, post);
 
         commentRepository.save(comments);
         return comments.getId();
     }
     @Transactional
-    public void update(Long commentId ,CommentForm commentForm) {
+    public void update(Long commentId , CommentEditForm commentEditForm) {
         Comments findComments = commentRepository.findById(commentId);
-        findComments.updateComments(commentForm.getComment());
+        findComments.updateComments(commentEditForm.getComment());
     }
 
     @Transactional

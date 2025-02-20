@@ -5,17 +5,17 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class CommentForm {
+public class CommentEditForm {
+
     @NotEmpty
     @Size(max = 100)
     private String comment;
 
-
-    private CommentForm(String comment) {
+    private CommentEditForm(String comment) {
         this.comment = comment;
     }
 
-    public static CommentForm create(String comment) {
-        return new CommentForm(comment);
+    public static CommentEditForm create(String comment){
+        return new CommentEditForm(comment);
     }
 }
