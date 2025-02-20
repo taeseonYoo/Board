@@ -4,7 +4,6 @@ import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
-import com.tae.board.dto.CommentSaveDto;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,9 +117,8 @@ class CommentServiceTest {
 
     private Long createComments(String comment, Member member,Post post) {
 
-        CommentSaveDto commentSaveDto = CommentSaveDto.createCommentSaveDto(comment, member.getId(), post.getId());
 
-        return commentService.saveComment(commentSaveDto);
+        return commentService.saveComment(post.getId(), member.getId(), comment);
     }
 
     private Member createMember(String name, String email, String password, String nickname) {
