@@ -22,20 +22,20 @@ public abstract class BaseTimeEntity {
 
     @CreatedDate
     @Column(name = "created_date")
-    private String createdDate;
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
     @Column(name = "modified_Date")
-    private String modifiedDate;
+    private LocalDateTime modifiedDate;
 
-    @PrePersist
-    public void onPrePersist(){
-        this.createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        this.modifiedDate = this.createdDate;
-    }
-    @PreUpdate
-    public void onPreUpdate(){
-        this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    }
+//    @PrePersist
+//    public void onPrePersist(){
+//        this.createdDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+//        this.modifiedDate = this.createdDate;
+//    }
+//    @PreUpdate
+//    public void onPreUpdate(){
+//        this.modifiedDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+//    }
 
 }

@@ -67,6 +67,9 @@ public class CommentService {
 
         commentRepository.delete(commentId);
     }
+    public List<Comments> findAllByPostOrderByCreateDate(Long postId) {
+        return commentRepository.findByPostOrderByCreatedDate(postId);
+    }
 
     public Comments findById(Long commentId) {
         return commentRepository.findById(commentId);

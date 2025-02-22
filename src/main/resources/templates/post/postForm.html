@@ -15,7 +15,7 @@
     <form class="card" th:object="${post}">
         <div class="card-header d-flex justify-content-between">
             <label th:text="'번호: ' + ${post.id}"></label>
-            <label th:text="'작성일: '+${post.createdDate}"></label>
+            <label th:text="'작성일: ' + ${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></label>
         </div>
         <div class="card-header d-flex justify-content-between">
             <label th:text="'작성자: '+${post.writer}"></label>
@@ -85,7 +85,7 @@
                     <p th:text="${comment.comment}"></p>
                 </div>
 
-                <span class="text-muted small" th:text="${comment.createdDate}"></span>
+                <span class="text-muted small" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
 
             </div>
             </div>

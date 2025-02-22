@@ -43,7 +43,7 @@
         <p></p>
         <p><strong>이름:</strong> <span th:text="${memberInfo.name}">기본이름</span></p>
         <p><strong>이메일:</strong> <span th:text="${memberInfo.email}">example@domain.com</span></p>
-        <p><strong>가입일:</strong> <span th:text="${memberInfo.createdDate}">2025-01-01</span></p>
+        <p><strong>가입일:</strong> <span th:text="${#temporals.format(memberInfo.createdDate, 'yyyy-MM-dd HH:mm')}">2025-01-01</span></p>
         <p><strong>닉네임:</strong> <span th:text="${memberInfo.nickname}"></span></p>
     </div>
 
@@ -60,7 +60,7 @@
         <tbody>
         <tr th:each="post : ${memberInfo.posts}">
             <td><a th:href="@{/board/post/{id}(id=${post.id})}" class="text-decoration-none" th:text="${post.title}">게시글 제목</a></td>
-            <td th:text="${post.createdDate}">2025-01-09</td>
+            <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">2025-01-09</td>
             <td th:text="${post.viewCount}">조회수</td>
         </tr>
         </tbody>
