@@ -26,7 +26,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long saveComment(Long postId,Long memberId,String comment) {
+    public Long write(Long postId, Long memberId, String comment) {
 
         Post post = postRepository.findOne(postId);
         Member member = memberRepository.findOne(memberId);
@@ -37,13 +37,19 @@ public class CommentService {
         return comments.getId();
     }
     @Transactional
-    public void update(Long commentId , CommentEditForm commentEditForm) {
-        Comments findComments = commentRepository.findById(commentId);
-        findComments.updateComments(commentEditForm.getComment());
+    public void update(Long commentId ,Long currentMemberId, CommentEditForm commentEditForm) {
+        Comments comment = commentRepository.findById(commentId);
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
+        }
+        comment.updateComments(commentEditForm.getComment());
     }
 
     @Transactional
-    public void deleteComments(Long commentId, Long postId, Long currentMemberId) {
+    public void deleteComment(Long commentId, Long postId, Long currentMemberId) {
 
         Post post = postRepository.findOne(postId);
         if (post == null) {

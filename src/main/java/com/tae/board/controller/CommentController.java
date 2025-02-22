@@ -49,7 +49,7 @@ public class CommentController {
             return "post/postForm";
         }
 
-        commentService.saveComment(postId,memberDetail.getMember().getId(), commentForm.getComment());
+        commentService.write(postId,memberDetail.getMember().getId(), commentForm.getComment());
 
         return "redirect:/board/post/" + postId;
     }
@@ -57,7 +57,7 @@ public class CommentController {
     @DeleteMapping("/board/post/{postId}/comment/{commentId}")
     public String delete(@PathVariable Long postId, @PathVariable Long commentId,
                          @AuthenticationPrincipal MemberDetail memberDetail) {
-        commentService.deleteComments(commentId, postId, memberDetail.getMember().getId());
+        commentService.deleteComment(commentId, postId, memberDetail.getMember().getId());
 
         return "redirect:/board/post/" + postId;
     }
@@ -75,7 +75,7 @@ public class CommentController {
             return "comment/editCommentForm";
         }
 
-        commentService.update(commentId, commentEditForm);
+        commentService.update(commentId,memberDetail.getMember().getId(),commentEditForm);
 
         return "redirect:/board/post/" + postId;
     }
