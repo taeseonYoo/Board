@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -84,7 +86,8 @@ public class CommentController {
     private void loadPostDetails(Model model, Long postId) {
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
-        model.addAttribute("comments", post.getComments());
+        List<Comments> comments = commentService.findAllByPostOrderByCreateDate(postId);
+        model.addAttribute("comments", comments);
     }
 
 }

@@ -41,7 +41,7 @@
             <td th:text="${post.id}">번호</td>
             <td style="text-align: left"><a th:href="@{/board/post/{postId}(postId=${post.id})}" th:text="${post.title}">게시글 제목</a></td>
             <td th:text="${post.writer}">작성자</td>
-            <td th:text="${post.createdDate}">2025-01-09</td>
+            <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}">2025-01-09</td>
             <td th:text="${post.viewCount}">조회수</td>
         </tr>
         </tbody>
