@@ -1,10 +1,12 @@
 package com.tae.board.service;
 
-import com.tae.board.controller.form.CommentForm;
+import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.exception.UnauthorizedAccessException;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,94 +33,104 @@ class CommentServiceTest {
     public void 댓글_생성() {
 
         //given
-        Member member = createMember("SOO", "SOO@spring.jpa", "1234", "SOON");
-        Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?", member.getNickname());
-        Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
+        Member member = createMember("사용자", "USER@spring.jpa", "12345678", "USER");
+        Post post = createPost(member, "댓글 생성 테스트 게시글 제목", "댓글 생성 테스트 게시글 내용");
+        String content = "댓글 생성 테스트";
 
         //when
-
-        List<Comments> allByMember = commentService.findAllByMember(member.getId());
-        List<Comments> allByPost = commentService.findAllByPost(post.getId());
-
-        Comments byId = commentService.findById(commentId);
-        System.out.println(byId.getMember().getId());
-        //then
-
-        assertThat(allByMember.size()).isEqualTo(1);
-        assertThat(allByPost.size()).isEqualTo(1);
-//
-        assertThat(byId.getMember().getId()).isEqualTo(member.getId());
-        assertThat(byId.getPost().getId()).isEqualTo(post.getId());
-        assertThat(byId.getComment()).isEqualTo("내용은 SpringJPA에 대해서 해주세요");
-
-    }
-
-    @Test
-    public void 댓글_삭제() {
-        //given
-        Member member = createMember("SOO", "SOO@spring.jpa", "1234", "SOON");
-        Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?", member.getNickname());
-        Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
-        Long commentId2 = createComments("ㅋㅋㅋ SpringJPA에 대해서 해주세요", member, post);
-
-        //when
-        Comments byId = commentService.findById(commentId);
-        byId.removePost();
-        commentService.deleteComments(commentId, post.getId(), member.getId());
-        em.flush();
-        em.clear();
-        List<Comments> allByPost = commentService.findAllByPost(post.getId());
-        List<Comments> allByMember = commentService.findAllByMember(member.getId());
+        Long commentId = createComments(content, member, post);
+        Comments savedComment = commentService.findById(commentId);
 
         //then
-        assertThat(allByMember.size()).isEqualTo(1);
-        assertThat(allByPost.size()).isEqualTo(1);
+        assertThat(savedComment.getComment()).isEqualTo(content);
 
-    }
-
-    @Test
-    public void 다른회원_댓글(){
-        //given
-        Member member = createMember("SOO", "SOO@spring.jpa", "1234", "SOON");
-        Member member1 = createMember("KIM", "KIM@spring.jpa", "1234", "KIMS");
-        Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?", member.getNickname());
-        Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
-        Long commentId2 = createComments("저는 반대입니다.", member1, post);
-
-        //when
-        commentService.deleteComments(commentId, post.getId(), member.getId());
-
-
-        //then
-        assertThat(commentService.findAllByPost(post.getId()).size()).isEqualTo(1);
+        //then-연관관계 체크
+        assertThat(savedComment.getMember()).isEqualTo(member);
+        assertThat(savedComment.getPost()).isEqualTo(post);
+        Assertions.assertTrue(post.getComments().contains(savedComment));
     }
 
     @Test
     public void 댓글_수정() {
         //given
-        Member member = createMember("SOO", "SOO@spring.jpa", "1234", "SOON");
-        Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?", member.getNickname());
-        Long commentId = createComments("내용은 SpringJPA에 대해서 해주세요", member, post);
+        Member member = createMember("사용자", "USER@spring.jpa", "12345678", "USER");
+        Post post = createPost(member, "댓글 수정 테스트 게시글 제목", "댓글 수정 테스트 게시글 내용");
+        Long commentId = createComments("댓글 수정 테스트", member, post);
 
         //when
-//        CommentForm commentForm = new CommentForm();
+        String modifyContent = "내용을 변경합니다.";
+        CommentEditForm commentEditForm = CommentEditForm.create(modifyContent);
+        commentService.update(commentId, member.getId(),commentEditForm );
+        Comments savedComment = commentService.findById(commentId);
 
-//        commentForm.setMemberId(member.getId());
-//        commentForm.setPostId(post.getId());
-//        commentForm.setComment("Spring 말고 다른걸로 합시다.");
-//        commentService.update(commentId, commentForm);
         //then
+        assertThat(savedComment.getComment()).isEqualTo(modifyContent);
 
-        assertThat(commentService.findById(commentId).getComment()).isEqualTo("Spring 말고 다른걸로 합시다.");
+    }
+
+    @Test
+    public void 댓글_삭제() {
+
+        //given
+        Member member = createMember("사용자", "USER@spring.jpa", "12345678", "USER");
+        Post post = createPost(member, "댓글 삭제 테스트 게시글 제목", "댓글 삭제 테스트 게시글 내용");
+        Long commentId = commentService.write(post.getId(), member.getId(), "댓글 삭제 테스트");
+
+        //when
+        Comments byId = commentService.findById(commentId);
+        commentService.deleteComment(commentId, post.getId(), member.getId());
+        List<Comments> commentsByPost = commentService.findAllByPost(post.getId());
+
+        //then
+        assertThat(commentsByPost).isEmpty();
+        assertThat(post.getComments()).isEmpty();
+
+    }
+
+    @Test
+    public void 게시글_삭제시_댓글_삭제() {
+        //given
+        Member member = createMember("사용자", "USER@spring.jpa", "12345678", "USER");
+        Post post = createPost(member, "댓글 삭제 테스트 게시글 제목", "댓글 삭제 테스트 게시글 내용");
+        commentService.write(post.getId(), member.getId(), "댓글 삭제 테스트1");
+        commentService.write(post.getId(), member.getId(), "댓글 삭제 테스트2");
+
+        //when
+        postService.deletePost(post.getId(), member.getId());
+
+        //then
+        assertThat(commentService.findAllByPost(post.getId())).isEmpty();
+    }
+
+    @Test
+    public void 권한없는_댓글_삭제(){
+        //given
+        Member member = createMember("사용자", "USER@spring.jpa", "12345678", "USER");
+        Member fake = createMember("가짜", "가짜@spring.jpa", "1234", "가짜");
+        Post post = createPost(member, "제목입니다.", "내용은 무엇으로 할까요?");
+        Long commentId = createComments("좋아요", member, post);
+
+        //when & then
+        assertThatThrownBy(() -> {
+            commentService.deleteComment(commentId, post.getId(), fake.getId());
+        }).isInstanceOf(UnauthorizedAccessException.class)
+                .hasMessage("댓글 삭제 권한이 없습니다.");
+
+        //then
+        Comments memberComment = commentService.findById(commentId);
+        assertThat(memberComment).isNotNull();
+        assertThat(memberComment.getPost()).isEqualTo(post);
+        Assertions.assertTrue(post.getComments().contains(memberComment));
 
     }
 
 
 
+
+
     private Long createComments(String comment, Member member,Post post) {
 
-
-        return commentService.saveComment(post.getId(), member.getId(), comment);
+        return commentService.write(post.getId(), member.getId(), comment);
     }
 
     private Member createMember(String name, String email, String password, String nickname) {
@@ -127,7 +139,7 @@ class CommentServiceTest {
         return member;
     }
 
-    private Post createPost(Member member, String title, String content, String nickname) {
+    private Post createPost(Member member, String title, String content) {
 
         Long postId = postService.write(member.getId(), title, content);
         return postService.findOne(postId);
