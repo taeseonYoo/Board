@@ -34,16 +34,17 @@ public class CommentController {
         Comments comment = commentService.findById(commentId);
 
         loadPostDetails(model, postId);
-
-        model.addAttribute("targetId",commentId);
         model.addAttribute("commentEditForm", CommentEditForm.create(comment.getComment()));
 
-        return "comment/editCommentForm";
+        model.addAttribute("targetId",commentId);
+
+        return "post/postForm";
     }
 
     //댓글 작성
     @PostMapping("/board/post/{postId}/comment")
     public String create(@AuthenticationPrincipal MemberDetail memberDetail, @PathVariable Long postId,
+                         CommentEditForm commentEditForm,
                          @Valid CommentForm commentForm, BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -59,7 +60,7 @@ public class CommentController {
     @DeleteMapping("/board/post/{postId}/comment/{commentId}")
     public String delete(@PathVariable Long postId, @PathVariable Long commentId,
                          @AuthenticationPrincipal MemberDetail memberDetail) {
-        commentService.deleteComment(commentId, postId, memberDetail.getMember().getId());
+        commentService.delete(commentId, postId, memberDetail.getMember().getId());
 
         return "redirect:/board/post/" + postId;
     }
@@ -67,17 +68,17 @@ public class CommentController {
     @PostMapping("/board/post/{postId}/comment/{commentId}")
     public String update(@PathVariable Long postId, @PathVariable Long commentId,
                          @AuthenticationPrincipal MemberDetail memberDetail,
-                         @ModelAttribute CommentForm commentForm,
+                         CommentForm commentForm,
                          @Valid CommentEditForm commentEditForm,
                          BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
             loadPostDetails(model, postId);
             model.addAttribute("targetId",commentId);
-            return "comment/editCommentForm";
+            return "post/postForm";
         }
 
-        commentService.update(commentId,memberDetail.getMember().getId(),commentEditForm);
+        commentService.update(postId,commentId,memberDetail.getMember().getId(),commentEditForm);
 
         return "redirect:/board/post/" + postId;
     }
