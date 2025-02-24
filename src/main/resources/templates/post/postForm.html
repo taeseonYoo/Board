@@ -66,14 +66,15 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
-                                      th:method="get">
-                                    <button type="submit" class="dropdown-item">수정</button>
-                                </form>
+                                <a type="button" class="dropdown-item"
+                                   th:if="${targetId != comment.id}"
+                                        th:href="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}">
+                                    수정
+                                </a>
                             </li>
                             <li>
                                 <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
-                                      th:method="delete">
+                                      th:method="delete" onsubmit="return confirmDelete();">
                                     <button type="submit" class="dropdown-item">삭제</button>
                                 </form>
                             </li>
@@ -81,9 +82,21 @@
                     </div>
                 </div>
 
-                <div class="comment-content">
-                    <p th:text="${comment.comment}"></p>
-                </div>
+                <p th:text="${comment.comment}"
+                   th:style="${targetId != comment.id} ? 'display: block;' : 'display: none;'"></p>
+
+
+                <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
+                      method="post"
+                      th:object="${commentEditForm}"
+                      th:style="${targetId == comment.id} ? 'display: block;' : 'display: none;'">
+                    <textarea class="form-control" rows="3" th:field="*{comment}"
+                              th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-success me-1">저장</button>
+                        <a type="button" class="btn btn-secondary me-1" th:href="@{/board/post/{postId}(postId=${post.id})}">취소</a>
+                    </div>
+                </form>
 
                 <span class="text-muted small" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
 

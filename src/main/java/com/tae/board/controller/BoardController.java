@@ -1,5 +1,6 @@
 package com.tae.board.controller;
 
+import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.PostForm;
 import com.tae.board.domain.Comments;
@@ -60,7 +61,10 @@ public class BoardController {
 
     //게시글 조회 페이지
     @GetMapping("/board/post/{postId}")
-    public String post(@PathVariable Long postId, @ModelAttribute CommentForm commentForm, Model model) {
+    public String post(@PathVariable Long postId,
+                       @ModelAttribute CommentForm commentForm,
+                       @ModelAttribute CommentEditForm commentEditForm,
+                       Model model) {
 
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);

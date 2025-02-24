@@ -36,9 +36,15 @@ public class CommentService {
         commentRepository.save(comments);
         return comments.getId();
     }
+
     @Transactional
-    public void update(Long commentId ,Long currentMemberId, CommentEditForm commentEditForm) {
+    public void update(Long postId, Long commentId, Long currentMemberId, CommentEditForm commentEditForm) {
+
+        Post post = postRepository.findOne(postId);
         Comments comment = commentRepository.findById(commentId);
+        if (post == null) {
+            throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
+        }
         if (comment == null) {
             throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
         }
@@ -49,7 +55,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, Long postId, Long currentMemberId) {
+    public void delete(Long commentId, Long postId, Long currentMemberId) {
 
         Post post = postRepository.findOne(postId);
         if (post == null) {

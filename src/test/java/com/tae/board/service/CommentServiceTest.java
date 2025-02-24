@@ -60,7 +60,7 @@ class CommentServiceTest {
         //when
         String modifyContent = "내용을 변경합니다.";
         CommentEditForm commentEditForm = CommentEditForm.create(modifyContent);
-        commentService.update(commentId, member.getId(),commentEditForm );
+        commentService.update(post.getId(), commentId, member.getId(),commentEditForm );
         Comments savedComment = commentService.findById(commentId);
 
         //then
@@ -78,7 +78,7 @@ class CommentServiceTest {
 
         //when
         Comments byId = commentService.findById(commentId);
-        commentService.deleteComment(commentId, post.getId(), member.getId());
+        commentService.delete(commentId, post.getId(), member.getId());
         List<Comments> commentsByPost = commentService.findAllByPost(post.getId());
 
         //then
@@ -112,7 +112,7 @@ class CommentServiceTest {
 
         //when & then
         assertThatThrownBy(() -> {
-            commentService.deleteComment(commentId, post.getId(), fake.getId());
+            commentService.delete(commentId, post.getId(), fake.getId());
         }).isInstanceOf(UnauthorizedAccessException.class)
                 .hasMessage("댓글 삭제 권한이 없습니다.");
 
