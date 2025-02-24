@@ -1,11 +1,13 @@
 package com.tae.board.controller;
 
+import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.PostForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Post;
 import com.tae.board.dto.PageInfoDto;
 import com.tae.board.security.MemberDetail;
+import com.tae.board.service.CommentService;
 import com.tae.board.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import java.util.Objects;
 public class BoardController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @GetMapping({"/", "/board"})
     public String home(@AuthenticationPrincipal MemberDetail memberDetail, Model model,
@@ -58,12 +61,15 @@ public class BoardController {
 
     //게시글 조회 페이지
     @GetMapping("/board/post/{postId}")
-    public String post(@PathVariable Long postId, @ModelAttribute CommentForm commentForm, Model model) {
+    public String post(@PathVariable Long postId,
+                       @ModelAttribute CommentForm commentForm,
+                       @ModelAttribute CommentEditForm commentEditForm,
+                       Model model) {
 
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
 
-        List<Comments> comments = post.getComments();
+        List<Comments> comments = commentService.findAllByPostOrderByCreateDate(postId);
         model.addAttribute("comments", comments);
 
         return "post/postForm";

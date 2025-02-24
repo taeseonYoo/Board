@@ -1,9 +1,12 @@
 package com.tae.board.service;
 
-import com.tae.board.controller.form.CommentForm;
+import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.exception.CommentNotFoundException;
+import com.tae.board.exception.PostNotFoundException;
+import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
@@ -23,25 +26,55 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long saveComment(CommentForm commentForm) {
+    public Long write(Long postId, Long memberId, String comment) {
 
-        Post post = postRepository.findOne(commentForm.getPostId());
-        Member member = memberRepository.findOne(commentForm.getMemberId());
+        Post post = postRepository.findOne(postId);
+        Member member = memberRepository.findOne(memberId);
 
-        Comments comments = Comments.createComments(commentForm.getComment(), member, post);
+        Comments comments = Comments.createComments(comment, member, post);
 
         commentRepository.save(comments);
         return comments.getId();
     }
+
     @Transactional
-    public void update(Long commentId ,CommentForm commentForm) {
-        Comments findComments = commentRepository.findById(commentId);
-        findComments.updateComments(commentForm.getComment());
+    public void update(Long postId, Long commentId, Long currentMemberId, CommentEditForm commentEditForm) {
+
+        Post post = postRepository.findOne(postId);
+        Comments comment = commentRepository.findById(commentId);
+        if (post == null) {
+            throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
+        }
+        comment.updateComments(commentEditForm.getComment());
     }
 
     @Transactional
-    public void deleteComments(Long commentId) {
+    public void delete(Long commentId, Long postId, Long currentMemberId) {
+
+        Post post = postRepository.findOne(postId);
+        if (post == null) {
+            throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+        Comments comment = commentRepository.findById(commentId);
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+        if (!comment.getMember().getId().equals(currentMemberId)) {
+            throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
+        }
+
+        comment.removePost();
+
         commentRepository.delete(commentId);
+    }
+    public List<Comments> findAllByPostOrderByCreateDate(Long postId) {
+        return commentRepository.findByPostOrderByCreatedDate(postId);
     }
 
     public Comments findById(Long commentId) {

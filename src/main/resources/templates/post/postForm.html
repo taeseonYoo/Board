@@ -15,7 +15,7 @@
     <form class="card" th:object="${post}">
         <div class="card-header d-flex justify-content-between">
             <label th:text="'번호: ' + ${post.id}"></label>
-            <label th:text="'작성일: '+${post.createdDate}"></label>
+            <label th:text="'작성일: ' + ${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></label>
         </div>
         <div class="card-header d-flex justify-content-between">
             <label th:text="'작성자: '+${post.writer}"></label>
@@ -33,16 +33,19 @@
         <a th:href="@{/board}" class="btn btn-secondary me-1">목록으로</a>
         <th:block th:if="${#authentication.principal.username == post.member.email}">
             <a th:href="@{/board/post/{id}/edit(id=${post.id})}" class="btn btn-primary me-1">수정</a>
-            <button type="button" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                삭제
-            </button>
+            <form th:action="@{/board/post/{id}/delete(id=${post.id})}"
+                  th:method="delete" onsubmit="return confirmDelete();">
+                <button type="submit" class="btn btn-danger me-1">삭제</button>
+            </form>
         </th:block>
     </div>
 
 
+
     <div class="card mt-5">
-        <form th:action="@{/board/comment}" method="post" th:object="${commentForm}" class="card-body mb-3">
-            <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="댓글을 입력하세요"></textarea>
+        <form th:action="@{/board/post/{id}/comment(id=${post.id})}" method="post" th:object="${commentForm}" class="card-body mb-3">
+            <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="댓글을 입력하세요"
+                      th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
             <div class="d-flex justify-content-end mt-2">
                 <button type="submit" class="btn btn-primary">등록</button>
             </div>
@@ -57,46 +60,58 @@
                     </div>
 
                     <!-- Dropdown -->
-                    <div class="dropdown">
+                    <div class="dropdown" th:if="${#authentication.principal.username == comment.member.email}">
                         <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <strong>⋯</strong>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">신고</a></li>
-                            <li><a class="dropdown-item" href="#">삭제</a></li>
+                            <li>
+                                <a type="button" class="dropdown-item"
+                                   th:if="${targetId != comment.id}"
+                                        th:href="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}">
+                                    수정
+                                </a>
+                            </li>
+                            <li>
+                                <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
+                                      th:method="delete" onsubmit="return confirmDelete();">
+                                    <button type="submit" class="dropdown-item">삭제</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
-                <p th:text="${comment.comment}"></p>
-                <span class="text-muted small" th:text="${comment.createdDate}"></span>
-            </div>
-            </div>
-        </div>
+                <p th:text="${comment.comment}"
+                   th:style="${targetId != comment.id} ? 'display: block;' : 'display: none;'"></p>
 
-    </div>
 
-<!-- 삭제 확인 모달 -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">삭제</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                정말로 삭제하시겠습니까?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                <form th:action="@{/board/post/{id}/delete(id=${post.id})}" th:method="delete">
-                    <button type="submit" class="btn btn-danger">삭제</button>
+                <form th:action="@{/board/post/{postId}/comment/{commentId}(postId=${post.id},commentId=${comment.id})}"
+                      method="post"
+                      th:object="${commentEditForm}"
+                      th:style="${targetId == comment.id} ? 'display: block;' : 'display: none;'">
+                    <textarea class="form-control" rows="3" th:field="*{comment}"
+                              th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
+                    <div class="d-flex justify-content-end mt-2">
+                        <button type="submit" class="btn btn-success me-1">저장</button>
+                        <a type="button" class="btn btn-secondary me-1" th:href="@{/board/post/{postId}(postId=${post.id})}">취소</a>
+                    </div>
                 </form>
+
+                <span class="text-muted small" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd HH:mm')}"></span>
+
+            </div>
             </div>
         </div>
-    </div>
-</div>
 
+    </div>
+
+
+<script>
+    function confirmDelete() {
+        return confirm("정말로 삭제하시겠습니까?");
+    }
+</script>
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

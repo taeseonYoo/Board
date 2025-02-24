@@ -1,6 +1,5 @@
 package com.tae.board;
 
-import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Member;
 import com.tae.board.service.CommentService;
 import com.tae.board.service.MemberService;
@@ -34,11 +33,9 @@ public class DataInitializer {
         }
 
 
-        CommentForm commentForm = CommentForm.from("아 그거 대박이에요 ㅋㅋㅋㅋ", member.getId(), postId);
-        commentService.saveComment(commentForm);
+        commentService.write(postId, member.getId(), "아 그거 대박이예요 ㅋㅋㅋㅋ");
 
-        CommentForm commentForm2 = CommentForm.from("맞아요!", member.getId(),postId);
-        commentService.saveComment(commentForm2);
+        commentService.write(postId, member.getId(), "맞아요!");
 
     }
 

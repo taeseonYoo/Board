@@ -47,7 +47,7 @@ public class PostRepository {
     }
 
     public Page<Post> findPostsWithPaging(Pageable pageable) {
-        List<Post> posts = em.createQuery("select p from Post p order by p.id desc", Post.class)
+        List<Post> posts = em.createQuery("select p from Post p order by p.createdDate desc", Post.class)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
