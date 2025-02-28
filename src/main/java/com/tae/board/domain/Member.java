@@ -22,6 +22,8 @@ public class Member extends BaseTimeEntity{
     private String password;
     @Column(nullable = false, unique = true)
     private String nickname;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 
     protected Member() {
     }
@@ -43,8 +45,6 @@ public class Member extends BaseTimeEntity{
      * mappedBy를 통해 연관 관계의 주인을 명시한다.
      * 외래 키가 어떤 엔티티에서 관리되는지 알려준다.
      */
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Post> posts = new ArrayList<>();
 
     //변경 할 수 있는 데이터는 패스워드와 닉네임뿐
     public void update(String password,String nickname){
