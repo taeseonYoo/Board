@@ -1,6 +1,7 @@
 package com.tae.board;
 
 import com.tae.board.domain.Member;
+import com.tae.board.domain.Post;
 import com.tae.board.service.CommentService;
 import com.tae.board.service.MemberService;
 import com.tae.board.service.PostService;
@@ -8,6 +9,12 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,17 +33,43 @@ public class DataInitializer {
                 password, "키노");
         memberService.join(member);
 
-        Long postId = postService.write(member.getId(), "님들 그거 보셨음?", "내용은 뭔가요");
+        int n = loadPostsFromFile("src/main/resources/posts.txt", member.getId());
+        loadCommentsFormFile("src/main/resources/comments.txt", n, member.getId());
 
-        for (int i = 1; i < 101; i++) {
-            postService.write(member.getId(), "게시글" + i, "내용" + i);
+    }
+
+
+    @Transactional
+    public int loadPostsFromFile(String filePath,Long memberId) {
+        int line = 0;
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath));
+            line = lines.size()/2;
+            for (int i = 0; i < lines.size(); i += 2) {
+                if (i + 1 < lines.size()) {
+                    String title = lines.get(i);
+                    String content = lines.get(i + 1);
+                    postService.write(memberId,title,content);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-
-        commentService.write(postId, member.getId(), "아 그거 대박이예요 ㅋㅋㅋㅋ");
-
-        commentService.write(postId, member.getId(), "맞아요!");
-
+        return line;
+    }
+    @Transactional
+    public void loadCommentsFormFile(String filePath,int postCount,Long memberId) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath));
+            for (int i = 0; i < postCount; i++) {
+                for (int j = i*2; j < i*2 +2; j++) {
+                    String comment = lines.get(j);
+                    commentService.write((long)(i+1), memberId, comment);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

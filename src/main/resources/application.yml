@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: info
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+  messages:
+    basename: messages
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+logging.level:
+  org.hibernate.SQL: debug
