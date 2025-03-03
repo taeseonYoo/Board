@@ -36,9 +36,9 @@ class MemberControllerTest {
 
         //회원 가입
         String password = "12345678";
-        Member member = Member.createMember("테스터","test@spring.com",
+        Member member = Member.createMember("테스터2","b@spring.com",
                 bCryptPasswordEncoder.encode(password),
-                "test");
+                "b");
         Long id = memberService.join(member);
         Member findMember = memberService.findOne(id);
 
@@ -75,9 +75,9 @@ class MemberControllerTest {
     void 회원가입() throws Exception {
         mockMvc.perform(post("/auth/register")
                         .param("name", "코코")
-                        .param("email", "test@spring.com")
+                        .param("email", "c@spring.com")
                         .param("password", "12345678")
-                        .param("nickname", "nick"))
+                        .param("nickname", "cccc"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/auth/login"));
     }
@@ -97,9 +97,9 @@ class MemberControllerTest {
     void 마이페이지() throws Exception {
 
         String password = "12345678";
-        Member member = Member.createMember("테스터","test@spring.com",
+        Member member = Member.createMember("테스터1","a@spring.com",
                 bCryptPasswordEncoder.encode(password),
-                "test");
+                "a");
         memberService.join(member);
 
         mockMvc.perform(get("/auth/mypage")

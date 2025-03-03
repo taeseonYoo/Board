@@ -1,12 +1,6 @@
 spring:
   profiles:
-    active: info
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+    active: local
   messages:
     basename: messages
   mvc:
