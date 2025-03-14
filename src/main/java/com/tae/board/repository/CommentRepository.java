@@ -43,8 +43,13 @@ public class CommentRepository {
                 .getResultList();
     }
 
-    public List<Comments> findByPostOrderByCreatedDate(Long postId) {
-        return em.createQuery("select c from Comments c where c.post.id = :postId order by c.createdDate desc", Comments.class)
+    /**
+    * 수정 코드 N+1문제 해결
+    * */
+    public List<Comments> findWithMemberByPostIdOrderByCreatedDate(Long postId) {
+        return em.createQuery("select c from Comments c join fetch c.member" +
+                        " where c.post.id = :postId" +
+                        " order by c.createdDate desc", Comments.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }

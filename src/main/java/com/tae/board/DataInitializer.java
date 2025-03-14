@@ -31,10 +31,15 @@ public class DataInitializer {
     public void init() {
         String password = bCryptPasswordEncoder.encode("12345678");
         Member member = Member.createMember("홍길동", "kino@spring.com", password, "키노");
+        for (int i = 0; i < 100; i++) {
+            Member member1 = Member.createMember(i+"", i+"@spring.com", password, i+"");
+            memberService.join(member1);
+        }
         memberService.join(member);
 
         int n = loadPostsFromFile("posts.txt", member.getId());
-        loadCommentsFromFile("comments.txt", n, member.getId());
+//        loadCommentsFromFile("comments.txt",n, member.getId());
+        loadComments("comments.txt");
     }
 
     @Transactional
@@ -79,6 +84,27 @@ public class DataInitializer {
                     commentService.write((long) (i + 1), memberId, comment);
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("파일을 읽을 수 없습니다: " + filePath);
+        }
+    }
+
+    @Transactional
+    public void loadComments(String filePath) {
+        try {
+            Resource resource = new ClassPathResource(filePath);
+            List<String> lines;
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+                lines = reader.lines().collect(Collectors.toList());
+            }
+
+            for (int j = 1; j < lines.size(); j++) {
+                String comment = lines.get(j);
+                commentService.write(1L, (long)j, comment);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("파일을 읽을 수 없습니다: " + filePath);
