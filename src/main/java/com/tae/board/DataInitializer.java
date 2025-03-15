@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class DataInitializer {
 
@@ -34,10 +34,10 @@ public class DataInitializer {
         memberService.join(member);
 
         int n = loadPostsFromFile("posts.txt", member.getId());
-        loadCommentsFromFile("comments.txt", n, member.getId());
+        loadCommentsFromFile("comments.txt",n, member.getId());
+//        loadCommentsForTest(1L,"comments.txt");
     }
 
-    @Transactional
     public int loadPostsFromFile(String filePath, Long memberId) {
         int line = 0;
         try {
@@ -45,7 +45,7 @@ public class DataInitializer {
             List<String> lines;
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-                lines = reader.lines().collect(Collectors.toList());
+                lines = reader.lines().toList();
             }
 
             line = lines.size() / 2;
@@ -57,20 +57,18 @@ public class DataInitializer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
             System.out.println("파일을 읽을 수 없습니다: " + filePath);
         }
         return line;
     }
 
-    @Transactional
     public void loadCommentsFromFile(String filePath, int postCount, Long memberId) {
         try {
             Resource resource = new ClassPathResource(filePath);
             List<String> lines;
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-                lines = reader.lines().collect(Collectors.toList());
+                lines = reader.lines().toList();
             }
 
             for (int i = 0; i < postCount; i++) {
@@ -80,7 +78,30 @@ public class DataInitializer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("파일을 읽을 수 없습니다: " + filePath);
+        }
+    }
+
+    public void loadCommentsForTest(Long postId,String filePath) {
+        String password = bCryptPasswordEncoder.encode("12345678");
+        for (int i = 0; i < 100; i++) {
+            Member member1 = Member.createMember(i+"", i+"@spring.com", password, i+"");
+            memberService.join(member1);
+        }
+        try {
+            Resource resource = new ClassPathResource(filePath);
+            List<String> lines;
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+                lines = reader.lines().toList();
+            }
+
+            for (int j = 1; j < lines.size(); j++) {
+                String comment = lines.get(j);
+                commentService.write(postId, (long)j, comment);
+            }
+
+        } catch (IOException e) {
             System.out.println("파일을 읽을 수 없습니다: " + filePath);
         }
     }
