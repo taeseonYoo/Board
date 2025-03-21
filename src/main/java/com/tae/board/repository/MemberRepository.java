@@ -31,6 +31,26 @@ public class MemberRepository {
                 .setParameter("nickname",nickname)
                 .getResultList();
     }
+    public List<Member> findByNickNameOrEmail(String nickname,String email) {
+        return em.createQuery("select m from Member m " +
+                        "where m.nickname = :nickname or m.email = :email", Member.class)
+                .setParameter("nickname", nickname)
+                .setParameter("email", email)
+                .getResultList();
+    }
+    public boolean existsByNickNameOrEmail(String nickname,String email) {
+        return em.createQuery("select count(*) from Member m " +
+                        "where m.nickname = :nickname or m.email = :email", Long.class)
+                .setParameter("nickname", nickname)
+                .setParameter("email", email)
+                .getSingleResult() > 0;
+    }
+
+    public List<Member> findByEmail2(String email) {
+        return em.createQuery("select m from Member m where m.email = :email", Member.class)
+                .setParameter("email", email)
+                .getResultList();
+    }
 
     public List<Member> findByName(String name) {
         return em.createQuery("select m from Member m where m.name = :name", Member.class)

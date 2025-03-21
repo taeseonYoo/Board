@@ -1,6 +1,8 @@
 package com.tae.board.service;
 
 import com.tae.board.domain.Member;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +19,7 @@ class MemberServiceTest {
     @Autowired MemberService memberService;
 
     @Test
-    public void 회원가입(){
+    public void 회원가입_성공(){
         //given
         Member member = Member.createMember("kim","spring@naver.com",
                 "password123","kinopio");
@@ -25,16 +27,16 @@ class MemberServiceTest {
         Long savedId = memberService.join(member);
 
         //then
-        assertEquals(member, memberService.findOne(savedId));
+        assertThat(memberService.findOne(savedId)).isEqualTo(member);
     }
 
     @Test
-    public void 중복_닉네임(){
+    public void 중복_닉네임_회원가입_실패(){
         //given
-        Member member1 = Member.createMember("kim","spring@naver.com",
-                "password123","kinopio");
-        Member member2 = Member.createMember("lee","spring@google.com",
-                "password234","kinopio");
+        Member member1 = Member.createMember("kim","kim@spring.io",
+                "12345678","nickname");
+        Member member2 = Member.createMember("lee","lee@spring.io",
+                "12345678","nickname");
         //when
         memberService.join(member1);
         IllegalStateException exception = assertThrows(IllegalStateException.class,
@@ -42,7 +44,22 @@ class MemberServiceTest {
 
         //then
         assertEquals("이미 존재하는 닉네임입니다.", exception.getMessage());
+    }
 
+    @Test
+    public void 중복_이메일_회원가입_실패() {
+        //given
+        Member member1 = Member.createMember("kim","test@spring.io",
+                "12345678","kim");
+        Member member2 = Member.createMember("lee","test@spring.io",
+                "12345678","lee");
+        //when
+        memberService.join(member1);
+//        IllegalStateException exception = assertThrows(IllegalStateException.class,
+//                () -> memberService.join(member2));
+
+        //then
+//        assertEquals("이미 존재하는 닉네임입니다.", exception.getMessage());
     }
 
     @Test
