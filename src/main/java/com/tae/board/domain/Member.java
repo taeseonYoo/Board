@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class Member extends BaseTimeEntity{
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
