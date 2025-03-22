@@ -30,7 +30,7 @@ public class MemberService {
     @Transactional
     public Long join(Member member){
         //닉네임 검증만 했음.
-        validateDuplicateMember2(member);
+        validateDuplicateMember(member);
         memberRepository.save(member);
         return member.getId();
     }
@@ -68,24 +68,8 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        List<Member> findMembers = memberRepository.findByNickName(member.getNickname());
-        List<Member> byEmail2 = memberRepository.findByEmail2(member.getEmail());
-        if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-        }
-        if (!byEmail2.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 이메일");
-        }
-    }
-    private void validateDuplicateMember1(Member member) {
-        List<Member> findMembers = memberRepository.findByNickNameOrEmail(member.getNickname(),member.getEmail());
-        if (!findMembers.isEmpty()) {
-            throw new IllegalStateException("이미 존재하는 닉네임입니다.");
-        }
-    }
-    private void validateDuplicateMember2(Member member) {
-        boolean exists = memberRepository.existsByNickNameOrEmail(member.getNickname(), member.getEmail());
-        if (exists) {
+        boolean empty = memberRepository.existsByNickNameOrEmail(member.getNickname(), member.getEmail());
+        if (!empty) {
             throw new IllegalStateException("이미 존재하는 닉네임입니다.");
         }
     }
