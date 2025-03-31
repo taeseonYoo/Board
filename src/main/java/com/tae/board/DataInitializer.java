@@ -1,5 +1,6 @@
 package com.tae.board;
 
+import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
 import com.tae.board.service.CommentService;
 import com.tae.board.service.MemberService;
@@ -29,12 +30,11 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        String password = bCryptPasswordEncoder.encode("12345678");
-        Member member = Member.createMember("홍길동", "kino@spring.com", password, "키노");
-        memberService.join(member);
+        MemberForm memberForm = new MemberForm("홍길동", "kino@spring.com", "12345678","길동");
+        Long savedId = memberService.join(memberForm);
 
-        int n = loadPostsFromFile("posts.txt", member.getId());
-        loadCommentsFromFile("comments.txt",n, member.getId());
+        int n = loadPostsFromFile("posts.txt", savedId);
+        loadCommentsFromFile("comments.txt",n, savedId);
 //        loadCommentsForTest(1L,"comments.txt");
     }
 
@@ -85,8 +85,8 @@ public class DataInitializer {
     public void loadCommentsForTest(Long postId,String filePath) {
         String password = bCryptPasswordEncoder.encode("12345678");
         for (int i = 0; i < 100; i++) {
-            Member member1 = Member.createMember(i+"", i+"@spring.com", password, i+"");
-            memberService.join(member1);
+            MemberForm memberForm = new MemberForm(i + "",  i + "@spring.com", "12345678",i + "");
+            memberService.join(memberForm);
         }
         try {
             Resource resource = new ClassPathResource(filePath);
