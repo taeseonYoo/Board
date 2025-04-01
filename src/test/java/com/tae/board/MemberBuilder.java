@@ -1,7 +1,6 @@
 package com.tae.board;
 
 import com.tae.board.controller.form.MemberForm;
-import com.tae.board.domain.Member;
 
 public class MemberBuilder {
     private String name = "테스터";

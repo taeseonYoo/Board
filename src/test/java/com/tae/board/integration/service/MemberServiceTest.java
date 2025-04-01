@@ -3,6 +3,7 @@ package com.tae.board.integration.service;
 import com.tae.board.MemberBuilder;
 import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
+import com.tae.board.dto.MemberInfoDto;
 import com.tae.board.exception.DuplicateMemberException;
 import com.tae.board.service.MemberService;
 import jakarta.persistence.EntityManager;

@@ -41,6 +41,7 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+	testImplementation 'org.mockito:mockito-core:5.3.1'
 }
 
 tasks.named('test') {
