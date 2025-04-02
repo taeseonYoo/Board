@@ -43,9 +43,10 @@ public class MemberServiceTest {
                 .build();
 
         BDDMockito.given(mockMemberRepo.findOne(any()))
-                .willReturn(memberForm.toEntity("HelloWorld"));
-        BDDMockito.given(mockBCrypt.encode("87654321"))
-                .willReturn("WorldHello");
+                .willReturn(memberForm.toEntity("Before"));
+
+        BDDMockito.given(mockBCrypt.encode(any()))
+                .willReturn("After");
 
         //비밀번호 새로운 값, 기존 값 일치하지 않는다.
         BDDMockito.given(mockBCrypt.matches(any(), any()))
@@ -57,7 +58,8 @@ public class MemberServiceTest {
         //then
         Member member = mockMemberRepo.findOne(1L);
         assertThat(member.getNickname()).isEqualTo("그대로");
-        assertThat(member.getPassword()).isEqualTo("WorldHello");
+        assertThat(member.getPassword()).isEqualTo("After");
+        //then 구현 검증
         BDDMockito.then(mockMemberRepo).should(never()).findByNickName(any());
     }
 
