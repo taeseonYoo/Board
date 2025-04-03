@@ -1,5 +1,6 @@
-package com.tae.board.controller;
+package com.tae.board.integration.controller;
 
+import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
 import com.tae.board.security.MemberDetail;
 import com.tae.board.service.MemberService;
@@ -12,6 +13,8 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,17 +38,15 @@ class MemberControllerTest {
     void 로그인() throws Exception {
 
         //회원 가입
-        String password = "12345678";
-        Member member = Member.createMember("테스터2","b@spring.com",
-                bCryptPasswordEncoder.encode(password),
-                "b");
-        Long id = memberService.join(member);
+
+        MemberForm memberForm = new MemberForm("테스터", "b@spring.com", "12345678", "b");
+        Long id = memberService.join(memberForm);
         Member findMember = memberService.findOne(id);
 
         //Test
         mockMvc.perform(post("/auth/login")
                         .param("email", findMember.getEmail())
-                        .param("password", password))
+                        .param("password", "12345678"))
                 .andExpect(authenticated())
                 .andExpect(status().is3xxRedirection()) // 성공 시 리다이렉트 확인
                 .andExpect(redirectedUrl("/board"));
@@ -55,11 +56,10 @@ class MemberControllerTest {
     @WithAnonymousUser
     void 로그인_실패() throws Exception {
         //회원 가입
-        String password = "12345678";
-        Member member = Member.createMember("테스터","test@spring.com",
-                bCryptPasswordEncoder.encode(password),
+        MemberForm memberForm = new MemberForm("테스터", "test@spring.com",
+                "12345678",
                 "test");
-        Long id = memberService.join(member);
+        Long id = memberService.join(memberForm);
         Member findMember = memberService.findOne(id);
 
         mockMvc.perform(post("/auth/login")
@@ -97,10 +97,11 @@ class MemberControllerTest {
     void 마이페이지() throws Exception {
 
         String password = "12345678";
-        Member member = Member.createMember("테스터1","a@spring.com",
+        MemberForm memberForm = new MemberForm("테스터1", "a@spring.com",
                 bCryptPasswordEncoder.encode(password),
                 "a");
-        memberService.join(member);
+        Long savedId = memberService.join(memberForm);
+        Member member = memberService.findOne(savedId);
 
         mockMvc.perform(get("/auth/mypage")
                         .with(SecurityMockMvcRequestPostProcessors.user(new MemberDetail(member))))

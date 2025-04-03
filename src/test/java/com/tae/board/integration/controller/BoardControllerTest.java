@@ -1,5 +1,6 @@
-package com.tae.board.controller;
+package com.tae.board.integration.controller;
 
+import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Comments;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
@@ -68,8 +69,8 @@ public class BoardControllerTest {
     }
 
     private Member createMember(String name, String email, String password, String nickname) {
-        Member member = Member.createMember(name, email, password, nickname);
-        Long savedId = memberService.join(member);
+        MemberForm memberForm = new MemberForm(name, email,password, nickname);
+        Long savedId = memberService.join(memberForm);
         return memberService.findOne(savedId);
     }
 

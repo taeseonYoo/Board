@@ -1,10 +1,13 @@
-package com.tae.board.service;
+package com.tae.board.integration.service;
 
 import com.tae.board.controller.form.CommentForm;
+import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.PostRepository;
+import com.tae.board.service.MemberService;
+import com.tae.board.service.PostService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -139,9 +142,9 @@ class PostServiceTest {
 
 
     private Member createMember(String name, String email, String password, String nickname) {
-        Member member = Member.createMember(name, email, password, nickname);
-        Long memberId = memberService.join(member);
-        return memberService.findOne(memberId);
+        MemberForm memberForm = new MemberForm(name, email, password, nickname);
+        Long savedId = memberService.join(memberForm);
+        return memberService.findOne(savedId);
     }
 
     private Post createPost(Member member, String title, String content) {

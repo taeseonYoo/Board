@@ -1,5 +1,6 @@
 package com.tae.board.controller.form;
 
+import com.tae.board.domain.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -28,10 +29,14 @@ public class MemberForm {
     @Size(min = 2,max = 8,message = "{member.nickname.size}")
     private String nickname;
 
-    public MemberForm(String name, String password, String email, String nickname) {
+    public MemberForm(String name, String email, String password, String nickname) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
     }
+    public Member toEntity(String encodedPassword) {
+        return Member.createMember(name, email, encodedPassword, nickname);
+    }
+
 }

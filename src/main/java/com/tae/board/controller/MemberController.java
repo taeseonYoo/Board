@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class MemberController {
 
     private final MemberService memberService ;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @GetMapping("/auth/register")
     public String createForm(@ModelAttribute MemberForm memberForm) {
 
@@ -49,10 +49,8 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return "member/memberJoin";
         }
-        String password = bCryptPasswordEncoder.encode(memberForm.getPassword());
-        Member member = Member.createMember(memberForm.getName(), memberForm.getEmail(),
-                password, memberForm.getNickname());
-        memberService.join(member);
+
+        memberService.join(memberForm);
 
         return "redirect:/auth/login";
     }
