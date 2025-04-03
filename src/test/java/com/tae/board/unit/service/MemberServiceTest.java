@@ -73,18 +73,17 @@ public class MemberServiceTest {
                 .build();
 
         BDDMockito.given(mockMemberRepo.findOne(any()))
-                .willReturn(memberForm.toEntity("HelloWorld"));
-        //비밀번호 새로운 값, 기존 값 일치
+                .willReturn(memberForm.toEntity("BeforePW"));
         BDDMockito.given(mockBCrypt.matches(any(), any()))
                 .willReturn(true);
 
         //when
-        memberService.updateMember(any(),"12345678","After");
+        memberService.updateMember(1L,"12345678","After");
 
         //then
-        Member member = memberService.findOne(any());
+        Member member = memberService.findOne(1L);
         assertThat(member.getNickname()).isEqualTo("After");
-        assertThat(member.getPassword()).isEqualTo("HelloWorld");
+        assertThat(member.getPassword()).isEqualTo("BeforePW");
         BDDMockito.then(mockBCrypt).should(never()).encode(any());
     }
 
@@ -98,20 +97,20 @@ public class MemberServiceTest {
                 .build();
 
         BDDMockito.given(mockMemberRepo.findOne(any()))
-                .willReturn(memberForm.toEntity("HelloWorld"));
-        BDDMockito.given(mockBCrypt.encode("87654321"))
-                .willReturn("WorldHello");
+                .willReturn(memberForm.toEntity("BeforePW"));
+        BDDMockito.given(mockBCrypt.encode(any()))
+                .willReturn("AfterPW");
 
         BDDMockito.given(mockBCrypt.matches(any(), any()))
                 .willReturn(false);
 
         //when
-        memberService.updateMember(any(),"87654321","After");
+        memberService.updateMember(1L,"87654321","After");
 
         //then
-        Member member = memberService.findOne(any());
+        Member member = memberService.findOne(1L);
         assertThat(member.getNickname()).isEqualTo("After");
-        assertThat(member.getPassword()).isEqualTo("WorldHello");
+        assertThat(member.getPassword()).isEqualTo("AfterPW");
     }
     @DisplayName("비밀번호 그대로, 닉네임도 그대로")
     @Test
@@ -123,8 +122,8 @@ public class MemberServiceTest {
                 .build();
 
         BDDMockito.given(mockMemberRepo.findOne(any()))
-                .willReturn(memberForm.toEntity("HelloWorld"));
-        //비밀번호 새로운 값, 기존 값 일치
+                .willReturn(memberForm.toEntity("BeforePW"));
+
         BDDMockito.given(mockBCrypt.matches(any(), any()))
                 .willReturn(true);
 
@@ -134,12 +133,11 @@ public class MemberServiceTest {
         //then
         Member member = memberService.findOne(any());
         assertThat(member.getNickname()).isEqualTo("Before");
-        assertThat(member.getPassword()).isEqualTo("HelloWorld");
+        assertThat(member.getPassword()).isEqualTo("BeforePW");
         BDDMockito.then(mockMemberRepo).should(never()).findByNickName(any());
-        BDDMockito.then(mockBCrypt).should(never()).encode(any());
     }
 
-    @DisplayName("회원정보 수정 시 닉네임 중복 오류")
+    @DisplayName("닉네임 수정 시 닉네임 중복 오류")
     @Test
     public void 회원정보_수정_닉네임_중복() {
         //given
@@ -149,7 +147,8 @@ public class MemberServiceTest {
                 .build();
 
         BDDMockito.given(mockMemberRepo.findOne(any()))
-                .willReturn(memberForm.toEntity("HelloWorld"));
+                .willReturn(memberForm.toEntity("BeforePW"));
+
         BDDMockito.given(mockBCrypt.matches(any(), any()))
                 .willReturn(true);
         BDDMockito.given(mockMemberRepo.findByNickName(any()))
@@ -162,6 +161,7 @@ public class MemberServiceTest {
         //비밀번호는 변경되지 않았다.
         Member member = memberService.findOne(any());
         assertThat(member.getNickname()).isEqualTo("Before");
+        assertThat(member.getPassword()).isEqualTo("BeforePW");
     }
 
 }

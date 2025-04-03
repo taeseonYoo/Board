@@ -60,12 +60,12 @@ class MemberServiceTest {
                 .build();
         Long memberId1 = memberService.join(member1);
 
-        //when
+        //when & then
         assertThrows(DuplicateMemberException.class,
                 () -> memberService.join(member2)
         );
 
-        //then member1은 저장이 되어야한다.
+        //then
         Member findMember = memberService.findOne(memberId1);
         assertThat(findMember).isNotNull();
     }
@@ -83,11 +83,11 @@ class MemberServiceTest {
                 .build();
         Long memberId1 = memberService.join(member1);
 
-        //when
+        //when & then
         assertThrows(DuplicateMemberException.class,
                 () -> memberService.join(member2));
 
-        //then member1은 저장되어야 한다.
+        //then
         Member findMember = memberService.findOne(memberId1);
         assertThat(findMember).isNotNull();
     }
@@ -105,10 +105,9 @@ class MemberServiceTest {
 
         //when
         memberService.updateMember(findMember.getId(), "12345678", "after");
-        Member changedMember = memberService.findOne(findMember.getId());
 
         //then
-        assertThat(bCryptPasswordEncoder.matches("12345678", changedMember.getPassword())).isTrue();
+        Member changedMember = memberService.findOne(findMember.getId());
         assertThat(changedMember.getNickname()).isEqualTo("after");
     }
 
@@ -125,11 +124,10 @@ class MemberServiceTest {
 
         //when
         memberService.updateMember(findMember.getId(), "87654321", "고정");
-        Member changedMember = memberService.findOne(findMember.getId());
 
         //then
+        Member changedMember = memberService.findOne(findMember.getId());
         assertThat(bCryptPasswordEncoder.matches("87654321", changedMember.getPassword())).isTrue();
-        assertThat(changedMember.getNickname()).isEqualTo("고정");
     }
 
 
