@@ -25,12 +25,12 @@ import static org.mockito.Mockito.verify;
 public class MemberServiceTest {
     private MemberService memberService;
     private final MemberRepository mockMemberRepo = Mockito.mock(MemberRepository.class);
-    private final CommentRepository mockCommentMock = Mockito.mock(CommentRepository.class);
-    private final PostRepository mockPostMock = Mockito.mock(PostRepository.class);
+    private final CommentRepository mockCommentRepo = Mockito.mock(CommentRepository.class);
+    private final PostRepository mockPostRepo = Mockito.mock(PostRepository.class);
     private final BCryptPasswordEncoder mockBCrypt = Mockito.mock(BCryptPasswordEncoder.class);
     @BeforeEach
     public void setUp() {
-        memberService = new MemberService(mockMemberRepo, mockPostMock, mockCommentMock, mockBCrypt);
+        memberService = new MemberService(mockMemberRepo, mockPostRepo, mockCommentRepo, mockBCrypt);
     }
 
     @DisplayName("비밀번호는 수정, 닉네임은 그대로")

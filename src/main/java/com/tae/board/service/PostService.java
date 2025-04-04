@@ -26,8 +26,7 @@ public class PostService {
     @Transactional
     public Long write(Long memberId, String title, String content) {
         Member member = memberRepository.findOne(memberId);
-        Post post = Post.createPost(member, title, content, member.getNickname());
-        postRepository.save(post);
+        Post post = postRepository.save(Post.createPost(member, title, content, member.getNickname()));
         return post.getId();
     }
 
