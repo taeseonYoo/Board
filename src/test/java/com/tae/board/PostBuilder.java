@@ -9,7 +9,6 @@ public class PostBuilder {
     private Member member;
     private String title="게시글 제목";
     private String content="게시글 내용";
-    private String writer;
     public static PostBuilder builder() {
         return new PostBuilder();
     }
@@ -26,13 +25,9 @@ public class PostBuilder {
         this.content = content;
         return this;
     }
-    public PostBuilder writer(String writer) {
-        this.writer = writer;
-        return this;
-    }
 
     public Post build() {
-        return Post.createPost(member, title, content, writer);
+        return Post.createPost(member, title, content, member.getNickname());
     }
 
 }

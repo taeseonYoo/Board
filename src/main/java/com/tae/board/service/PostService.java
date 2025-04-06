@@ -71,7 +71,7 @@ public class PostService {
         //멤버 연관관계 삭제
         post.removeMember();
 
-        postRepository.delete(postId);
+        postRepository.delete(post);
     }
 
     public Post findOne(Long postId) {

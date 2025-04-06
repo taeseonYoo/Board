@@ -27,8 +27,7 @@ public class PostRepository {
         return post;
     }
     //게시글 삭제
-    public void delete(Long postId) {
-        Post post = em.find(Post.class, postId);
+    public void delete(Post post) {
         em.remove(post);
     }
     //게시글 단건 검색
