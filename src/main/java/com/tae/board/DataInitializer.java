@@ -56,6 +56,9 @@ public class DataInitializer {
                     postService.write(memberId, title, content);
                 }
             }
+            for (int j = 0; j < 10; j++) {
+                postService.write(memberId, j+"", j+"");
+            }
         } catch (IOException e) {
             System.out.println("파일을 읽을 수 없습니다: " + filePath);
         }

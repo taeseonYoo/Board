@@ -39,13 +39,8 @@ public class BoardController {
             model.addAttribute("nickname", memberDetail.getNickname());
         }
 
-        Page<Post> posts = postService.findPagePosts(pageable);
+        PageInfoDto pageInfo = postService.findPagePosts(pageable);
 
-        int limit = 5;
-        int startPage = getStartPage(pageable, limit);
-        int endPage = getEndPage(startPage, limit, posts.getTotalPages());
-
-        PageInfoDto pageInfo = PageInfoDto.createPageInfo(startPage, endPage, pageable.getPageNumber(), posts.getTotalPages(), posts);
 
         model.addAttribute("pageInfo", pageInfo);
 
@@ -118,11 +113,4 @@ public class BoardController {
         return "redirect:/board";
     }
 
-    private static int getEndPage(int startPage, int limit, int totalPages) {
-        return Math.min(startPage + limit - 1, totalPages);
-    }
-
-    private static int getStartPage(Pageable pageable, int limit) {
-        return ((pageable.getPageNumber() / limit) * limit) + 1;
-    }
 }
