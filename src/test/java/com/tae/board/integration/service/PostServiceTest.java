@@ -1,25 +1,23 @@
 package com.tae.board.integration.service;
 
 import com.tae.board.MemberBuilder;
-import com.tae.board.PostBuilder;
-import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.PageInfoDto;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.exception.UnauthorizedAccessException;
-import com.tae.board.repository.PostRepository;
 import com.tae.board.service.MemberService;
 import com.tae.board.service.PostService;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -31,6 +29,7 @@ class PostServiceTest {
     PostService postService;
     @Autowired
     MemberService memberService;
+
 
     @Test
     @DisplayName("게시글 작성 성공")
@@ -181,6 +180,28 @@ class PostServiceTest {
         //then
         Post savedPost = postService.findOne(postId);
         assertThat(savedPost.getViewCount()).isEqualTo(1);
+    }
+
+    /**
+     * 기존 DB에 게시글이 없어야 정상 작동한다.
+     * deleteAll()을 작성하고 싶지는 않다.
+     */
+    @Test
+    public void 페이징() {
+        //given
+        MemberForm memberForm = MemberBuilder.builder().build();
+        Long memberId = memberService.join(memberForm);
+        for (int i = 0; i < 51; i++) {
+            postService.write(memberId, "title" + i, "content" + i);
+        }
+        Pageable pageable = PageRequest.of(5, 10);
+
+        //when
+        PageInfoDto pageInfo = postService.findPagePosts(pageable);
+
+        //then
+        assertThat(pageInfo.getStartPage()).isEqualTo(6);
+        assertThat(pageInfo.getEndPage()).isEqualTo(6);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.tae.board.dto;
 
 import com.tae.board.domain.Post;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
 
@@ -15,6 +16,7 @@ public class PageInfoDto {
 
     protected PageInfoDto() {
     }
+    @Builder
     private PageInfoDto(int startPage, int endPage, int currentPage, int totalPages, Page<Post> posts) {
         this.startPage = startPage;
         this.endPage = endPage;
@@ -23,8 +25,5 @@ public class PageInfoDto {
         this.posts = posts;
     }
 
-    public static PageInfoDto createPageInfo(int startPage, int endPage, int currentPage, int totalPages, Page<Post> posts) {
-        return new PageInfoDto(startPage, endPage, currentPage, totalPages, posts);
-    }
 
 }

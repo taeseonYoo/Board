@@ -5,6 +5,7 @@ import com.tae.board.PostBuilder;
 import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.PageInfoDto;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.MemberRepository;
@@ -16,7 +17,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
+import org.springframework.data.domain.*;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -215,7 +222,7 @@ public class PostServiceTest {
                 .willReturn(null);
 
         //when & then
-        Assertions.assertThrows(UnauthorizedAccessException.class,
+        Assertions.assertThrows(PostNotFoundException.class,
                 () -> postService.deletePost(1L, 1L));
 
     }
@@ -241,6 +248,100 @@ public class PostServiceTest {
                 () -> postService.deletePost(1L, 2L));
 
     }
+
+    @Test
+    @DisplayName("페이징: 게시글 0개, 페이지 1번 요청, 페이지당 10개씩, 페이지 범위는 5개")
+    public void 페이징1() {
+
+        //given
+        List<Post> posts = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> page = new PageImpl<>(posts, pageable, 0);
+
+        BDDMockito.given(mockPostRepo.findPostsWithPaging(any()))
+                .willReturn(page);
+
+        //when
+        PageInfoDto pageInfoDto = postService.findPagePosts(pageable);
+
+        //then
+        assertThat(pageInfoDto.getTotalPages()).isEqualTo(0);
+
+    }
+    @Test
+    @DisplayName("페이징: 게시글 1개, 페이지 1번 요청, 페이지당 10개씩, 페이지 범위는 5개")
+    public void 페이징2() {
+
+        //given
+        Member member = MemberBuilder.builder().build().toEntity("password");
+        List<Post> posts = IntStream.range(0, 1)
+                .mapToObj(i -> PostBuilder.builder().member(member).build())
+                .collect(Collectors.toList());
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> page = new PageImpl<>(posts, pageable, 1);
+
+        BDDMockito.given(mockPostRepo.findPostsWithPaging(any()))
+                .willReturn(page);
+
+        //when
+        PageInfoDto pageInfoDto = postService.findPagePosts(pageable);
+
+        //then
+        assertThat(pageInfoDto.getStartPage()).isEqualTo(1);
+        assertThat(pageInfoDto.getEndPage()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("페이징: 게시글 50개, 페이지 3번 요청, 페이지당 10개씩, 페이지 범위는 5개")
+    public void 페이징3() {
+
+        //given
+        Member member = MemberBuilder.builder().build().toEntity("password");
+        List<Post> posts = IntStream.range(0, 50)
+                .mapToObj(i -> PostBuilder.builder().member(member).build())
+                .collect(Collectors.toList());
+
+        List<Post> contentForPage = posts.subList(20,30);
+        Pageable pageable = PageRequest.of(2, 10);
+        Page<Post> page = new PageImpl<>(contentForPage, pageable, 50);
+
+        BDDMockito.given(mockPostRepo.findPostsWithPaging(any()))
+                .willReturn(page);
+
+        //when
+        PageInfoDto pageInfoDto = postService.findPagePosts(pageable);
+
+        //then
+        assertThat(pageInfoDto.getStartPage()).isEqualTo(1);
+        assertThat(pageInfoDto.getEndPage()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("페이징: 게시글 50개, 페이지 6번 요청, 페이지당 10개씩, 페이지 범위는 5개")
+    public void 페이징4() {
+
+        //given
+        Member member = MemberBuilder.builder().build().toEntity("password");
+        List<Post> posts = IntStream.range(0, 51)
+                .mapToObj(i -> PostBuilder.builder().member(member).build())
+                .collect(Collectors.toList());
+
+        List<Post> contentForPage = posts.subList(50, 51);
+        Pageable pageable = PageRequest.of(5, 10);
+        Page<Post> page = new PageImpl<>(contentForPage, pageable, 51);
+
+        BDDMockito.given(mockPostRepo.findPostsWithPaging(any()))
+                .willReturn(page);
+
+        //when
+        PageInfoDto pageInfoDto = postService.findPagePosts(pageable);
+
+        //then
+        assertThat(pageInfoDto.getStartPage()).isEqualTo(6);
+        assertThat(pageInfoDto.getEndPage()).isEqualTo(6);
+    }
+
 
 
 
