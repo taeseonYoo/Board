@@ -3,6 +3,7 @@ package com.tae.board.service;
 
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
+import com.tae.board.dto.PageInfoDto;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.exception.UnauthorizedAccessException;
 import com.tae.board.repository.MemberRepository;
@@ -22,12 +23,11 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
-
+    private final int limitPage = 5;
     @Transactional
     public Long write(Long memberId, String title, String content) {
         Member member = memberRepository.findOne(memberId);
-        Post post = Post.createPost(member, title, content, member.getNickname());
-        postRepository.save(post);
+        Post post = postRepository.save(Post.createPost(member, title, content, member.getNickname()));
         return post.getId();
     }
 
@@ -44,9 +44,21 @@ public class PostService {
         post.updatePost(title, content);
         return post.getId();
     }
-    public Page<Post> findPagePosts(Pageable pageable) {
-        return postRepository.findPostsWithPaging(pageable);
+    public PageInfoDto findPagePosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findPostsWithPaging(pageable);
+
+        int startPage = getStartPage(pageable);
+        int endPage = getEndPage(startPage, posts.getTotalPages());
+
+        return PageInfoDto.builder()
+                .startPage(startPage)
+                .endPage(endPage)
+                .currentPage(pageable.getPageNumber())
+                .totalPages(posts.getTotalPages())
+                .posts(posts).build();
+
     }
+
 
     @Transactional
     public Post viewPost(Long postId) {
@@ -72,7 +84,7 @@ public class PostService {
         //멤버 연관관계 삭제
         post.removeMember();
 
-        postRepository.delete(postId);
+        postRepository.delete(post);
     }
 
     public Post findOne(Long postId) {
@@ -84,5 +96,13 @@ public class PostService {
     public List<Post> findPostsByMember(Long memberId) {
         return postRepository.findAllByMember(memberId);
     }
+
+    private int getStartPage(Pageable pageable) {
+        return ((pageable.getPageNumber() / limitPage) * limitPage) + 1;
+    }
+    private int getEndPage(int startPage, int totalPages) {
+        return Math.min(startPage + limitPage - 1, totalPages);
+    }
+
 
 }

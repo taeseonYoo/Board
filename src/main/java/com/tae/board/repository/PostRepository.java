@@ -22,12 +22,12 @@ public class PostRepository {
      * 게시글 저장은 persist를 사용한다
      * 수정 시에는 더티 채킹을 통하여 변경한다.
      */
-    public void save(Post post) {
+    public Post save(Post post) {
         em.persist(post);
+        return post;
     }
     //게시글 삭제
-    public void delete(Long postId) {
-        Post post = em.find(Post.class, postId);
+    public void delete(Post post) {
         em.remove(post);
     }
     //게시글 단건 검색
