@@ -1,0 +1,3 @@
+1744458393294|0|statement|connection 42|url jdbc:h2:mem:beb5ca72-93c4-45be-af02-6d6fe408a541|drop table if exists comments cascade |drop table if exists comments cascade 
+1744458393295|0|statement|connection 42|url jdbc:h2:mem:beb5ca72-93c4-45be-af02-6d6fe408a541|drop table if exists member cascade |drop table if exists member cascade 
+1744458393295|0|statement|connection 42|url jdbc:h2:mem:beb5ca72-93c4-45be-af02-6d6fe408a541|drop table if exists post cascade |drop table if exists post cascade 

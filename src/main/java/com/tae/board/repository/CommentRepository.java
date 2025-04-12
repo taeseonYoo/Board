@@ -1,7 +1,6 @@
 package com.tae.board.repository;
 
 import com.tae.board.domain.Comments;
-import com.tae.board.exception.CommentNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,8 +14,9 @@ public class CommentRepository {
     private final EntityManager em;
 
     //댓글 작성
-    public void save(Comments comments) {
+    public Comments save(Comments comments) {
         em.persist(comments);
+        return comments;
     }
 
     //댓글 삭제
@@ -46,7 +46,7 @@ public class CommentRepository {
     /**
     * 수정 코드 N+1문제 해결
     * */
-    public List<Comments> findWithMemberByPostIdOrderByCreatedDate(Long postId) {
+    public List<Comments> findByPostIdOrderByCreatedDateDesc(Long postId) {
         return em.createQuery("select c from Comments c join fetch c.member" +
                         " where c.post.id = :postId" +
                         " order by c.createdDate desc", Comments.class)

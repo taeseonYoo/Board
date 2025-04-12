@@ -21,7 +21,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+/**
+ * 리팩터링 예정
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class MemberControllerTest {
