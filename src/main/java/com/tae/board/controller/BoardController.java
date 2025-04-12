@@ -11,8 +11,6 @@ import com.tae.board.service.CommentService;
 import com.tae.board.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -64,7 +61,7 @@ public class BoardController {
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
 
-        List<Comments> comments = commentService.findAllByPostOrderByCreateDate(postId);
+        List<Comments> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
         model.addAttribute("comments", comments);
 
         return "post/postForm";
