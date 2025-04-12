@@ -26,19 +26,17 @@ public class CommentService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long write(Long postId, Long memberId, String comment) {
+    public Long write(Long postId, Long memberId, String content) {
 
         Post post = postRepository.findOne(postId);
         Member member = memberRepository.findOne(memberId);
 
-        Comments comments = Comments.createComments(comment, member, post);
-
-        commentRepository.save(comments);
-        return comments.getId();
+        Comments comment = commentRepository.save(Comments.createComments(content, member, post));
+        return comment.getId();
     }
 
     @Transactional
-    public void update(Long postId, Long commentId, Long currentMemberId, CommentEditForm commentEditForm) {
+    public Long update(Long postId, Long commentId, Long currentMemberId, CommentEditForm commentEditForm) {
 
         Post post = postRepository.findOne(postId);
         Comments comment = commentRepository.findById(commentId);
@@ -52,10 +50,11 @@ public class CommentService {
             throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
         }
         comment.updateComments(commentEditForm.getComment());
+        return comment.getId();
     }
 
     @Transactional
-    public void delete(Long commentId, Long postId, Long currentMemberId) {
+    public void delete(Long postId, Long commentId,Long currentMemberId) {
 
         Post post = postRepository.findOne(postId);
         if (post == null) {
@@ -73,8 +72,8 @@ public class CommentService {
 
         commentRepository.delete(commentId);
     }
-    public List<Comments> findAllByPostOrderByCreateDate(Long postId) {
-        return commentRepository.findWithMemberByPostIdOrderByCreatedDate(postId);
+    public List<Comments> findByPostIdOrderByCreatedDateDesc(Long postId) {
+        return commentRepository.findByPostIdOrderByCreatedDateDesc(postId);
     }
 
     public Comments findById(Long commentId) {

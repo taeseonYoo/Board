@@ -60,7 +60,7 @@ public class CommentController {
     @DeleteMapping("/board/post/{postId}/comment/{commentId}")
     public String delete(@PathVariable Long postId, @PathVariable Long commentId,
                          @AuthenticationPrincipal MemberDetail memberDetail) {
-        commentService.delete(commentId, postId, memberDetail.getMember().getId());
+        commentService.delete(postId,commentId, memberDetail.getMember().getId());
 
         return "redirect:/board/post/" + postId;
     }
@@ -87,7 +87,7 @@ public class CommentController {
     private void loadPostDetails(Model model, Long postId) {
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
-        List<Comments> comments = commentService.findAllByPostOrderByCreateDate(postId);
+        List<Comments> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
         model.addAttribute("comments", comments);
     }
 
