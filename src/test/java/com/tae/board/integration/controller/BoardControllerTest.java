@@ -1,7 +1,7 @@
 package com.tae.board.integration.controller;
 
 import com.tae.board.controller.form.MemberForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.service.CommentService;
@@ -16,8 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,8 +64,8 @@ public class BoardControllerTest {
 
 
 
-    private Comments createComments(String comment, Member member, Post post) {
-        Long savedId = commentService.write(post.getId(), member.getId(), comment);
+    private Comment createComments(String content, Member member, Post post) {
+        Long savedId = commentService.write(post.getId(), member.getId(), content);
         return commentService.findById(savedId);
     }
 

@@ -44,8 +44,8 @@
 
     <div class="card mt-5">
         <form th:action="@{/board/post/{id}/comment(id=${post.id})}" method="post" th:object="${commentForm}" class="card-body mb-3">
-            <textarea th:field="*{comment}" class="form-control" rows="4" placeholder="댓글을 입력하세요"
-                      th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
+            <textarea th:field="*{content}" class="form-control" rows="4" placeholder="댓글을 입력하세요"
+                      th:class="${#fields.hasErrors('content') ? 'form-control is-invalid':'form-control'}"></textarea>
             <div class="d-flex justify-content-end mt-2">
                 <button type="submit" class="btn btn-primary">등록</button>
             </div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <p th:text="${comment.comment}"
+                <p th:text="${comment.content}"
                    th:style="${targetId != comment.id} ? 'display: block;' : 'display: none;'"></p>
 
 
@@ -90,8 +90,8 @@
                       method="post"
                       th:object="${commentEditForm}"
                       th:style="${targetId == comment.id} ? 'display: block;' : 'display: none;'">
-                    <textarea class="form-control" rows="3" th:field="*{comment}"
-                              th:class="${#fields.hasErrors('comment') ? 'form-control is-invalid':'form-control'}"></textarea>
+                    <textarea class="form-control" rows="3" th:field="*{content}"
+                              th:class="${#fields.hasErrors('content') ? 'form-control is-invalid':'form-control'}"></textarea>
                     <div class="d-flex justify-content-end mt-2">
                         <button type="submit" class="btn btn-success me-1">저장</button>
                         <a type="button" class="btn btn-secondary me-1" th:href="@{/board/post/{postId}(postId=${post.id})}">취소</a>

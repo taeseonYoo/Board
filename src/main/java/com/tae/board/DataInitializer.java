@@ -76,8 +76,8 @@ public class DataInitializer {
 
             for (int i = 0; i < postCount; i++) {
                 for (int j = i * 2; j < i * 2 + 2; j++) {
-                    String comment = lines.get(j);
-                    commentService.write((long) (i + 1), memberId, comment);
+                    String content = lines.get(j);
+                    commentService.write((long) (i + 1), memberId, content);
                 }
             }
         } catch (IOException e) {
@@ -100,8 +100,8 @@ public class DataInitializer {
             }
 
             for (int j = 1; j < lines.size(); j++) {
-                String comment = lines.get(j);
-                commentService.write(postId, (long)j, comment);
+                String content = lines.get(j);
+                commentService.write(postId, (long)j, content);
             }
 
         } catch (IOException e) {

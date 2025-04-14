@@ -71,7 +71,7 @@
     <ul class="list-group">
         <li class="list-group-item" th:each="comment : ${memberInfo.comments}">
             <a th:href="@{/board/post/{id}(id=${comment.post.id})}" class="text-decoration-none">
-                <div th:text="${comment.comment}">댓글 내용</div>
+                <div th:text="${comment.content}">댓글 내용</div>
                 <div class="small" th:text="'['+${comment.post.title}+']'">게시글 제목</div>
             </a>
         </li>

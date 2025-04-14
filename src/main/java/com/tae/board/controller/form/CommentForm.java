@@ -8,14 +8,14 @@ import lombok.Getter;
 public class CommentForm {
     @NotEmpty
     @Size(max = 100)
-    private String comment;
+    private String content;
 
 
-    private CommentForm(String comment) {
-        this.comment = comment;
+    private CommentForm(String content) {
+        this.content = content;
     }
 
-    public static CommentForm create(String comment) {
-        return new CommentForm(comment);
+    public static CommentForm create(String content) {
+        return new CommentForm(content);
     }
 }

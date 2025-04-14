@@ -3,7 +3,7 @@ package com.tae.board.integration.service;
 import com.tae.board.MemberBuilder;
 import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.MemberForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.exception.CommentNotFoundException;
 import com.tae.board.exception.PostNotFoundException;
 import com.tae.board.exception.UnauthorizedAccessException;
@@ -46,9 +46,9 @@ class CommentServiceTest {
         Long commentId = commentService.write(postId, memberId, "Comment");
 
         //then
-        Comments comment = commentService.findById(commentId);
+        Comment comment = commentService.findById(commentId);
 
-        assertThat(comment.getComment()).isEqualTo("Comment");
+        assertThat(comment.getContent()).isEqualTo("Comment");
         assertThat(comment.getMember().getId()).isEqualTo(memberId);
         assertThat(comment.getPost().getId()).isEqualTo(postId);
     }
@@ -68,8 +68,8 @@ class CommentServiceTest {
                 CommentEditForm.create("Edit Comment"));
 
         //then
-        Comments comment = commentService.findById(updateCommentId);
-        assertThat(comment.getComment()).isEqualTo("Edit Comment");
+        Comment comment = commentService.findById(updateCommentId);
+        assertThat(comment.getContent()).isEqualTo("Edit Comment");
     }
 
     @Test
@@ -88,7 +88,7 @@ class CommentServiceTest {
                 () -> commentService.update(postId, commentId, memberId, CommentEditForm.create("After Comment")));
 
         //then
-        Comments comment = commentService.findById(commentId);
+        Comment comment = commentService.findById(commentId);
         assertThat(comment).isNull();
     }
 
@@ -107,7 +107,7 @@ class CommentServiceTest {
                 () -> commentService.update(postId, commentId, memberId, CommentEditForm.create("After Comment")));
 
         //then
-        Comments comment = commentService.findById(commentId);
+        Comment comment = commentService.findById(commentId);
         assertThat(comment).isNull();
     }
     @Test
@@ -132,8 +132,8 @@ class CommentServiceTest {
                 () -> commentService.update(postId, commentId, memberId2, CommentEditForm.create("After Comment")));
 
         //then
-        Comments comment = commentService.findById(commentId);
-        assertThat(comment.getComment()).isEqualTo("Before Comment");
+        Comment comment = commentService.findById(commentId);
+        assertThat(comment.getContent()).isEqualTo("Before Comment");
     }
 
     @Test
@@ -150,7 +150,7 @@ class CommentServiceTest {
         commentService.delete(postId, commentId, memberId);
 
         //then
-        Comments comment = commentService.findById(commentId);
+        Comment comment = commentService.findById(commentId);
         assertThat(comment).isNull();
     }
 
@@ -177,8 +177,8 @@ class CommentServiceTest {
                 () -> commentService.delete(postId, commentId, memberId2));
 
         //then
-        Comments comment = commentService.findById(commentId);
-        assertThat(comment.getComment()).isEqualTo("Before Comment");
+        Comment comment = commentService.findById(commentId);
+        assertThat(comment.getContent()).isEqualTo("Before Comment");
     }
 
 
@@ -194,13 +194,13 @@ class CommentServiceTest {
         }
 
         //when
-        List<Comments> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
+        List<Comment> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
 
         //then
 //        assertThat(comments).isSortedAccordingTo(Comparator.comparing(Comments::getCreatedDate).reversed());
-        assertThat(comments).isSortedAccordingTo(new Comparator<Comments>() {
+        assertThat(comments).isSortedAccordingTo(new Comparator<Comment>() {
             @Override
-            public int compare(Comments o1, Comments o2) {
+            public int compare(Comment o1, Comment o2) {
                 if (o1.getCreatedDate().isBefore(o2.getCreatedDate())) {
                     return 1;
                 } else if (o1.getCreatedDate().isEqual(o2.getCreatedDate())) {

@@ -1,7 +1,7 @@
 package com.tae.board.service;
 
 import com.tae.board.controller.form.CommentEditForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.exception.CommentNotFoundException;
@@ -31,7 +31,7 @@ public class CommentService {
         Post post = postRepository.findOne(postId);
         Member member = memberRepository.findOne(memberId);
 
-        Comments comment = commentRepository.save(Comments.createComments(content, member, post));
+        Comment comment = commentRepository.save(Comment.createComments(content, member, post));
         return comment.getId();
     }
 
@@ -39,7 +39,7 @@ public class CommentService {
     public Long update(Long postId, Long commentId, Long currentMemberId, CommentEditForm commentEditForm) {
 
         Post post = postRepository.findOne(postId);
-        Comments comment = commentRepository.findById(commentId);
+        Comment comment = commentRepository.findById(commentId);
         if (post == null) {
             throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
         }
@@ -49,7 +49,7 @@ public class CommentService {
         if (!comment.getMember().getId().equals(currentMemberId)) {
             throw new UnauthorizedAccessException("댓글 삭제 권한이 없습니다.");
         }
-        comment.updateComments(commentEditForm.getComment());
+        comment.updateComments(commentEditForm.getContent());
         return comment.getId();
     }
 
@@ -60,7 +60,7 @@ public class CommentService {
         if (post == null) {
             throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
         }
-        Comments comment = commentRepository.findById(commentId);
+        Comment comment = commentRepository.findById(commentId);
         if (comment == null) {
             throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
         }
@@ -72,18 +72,18 @@ public class CommentService {
 
         commentRepository.delete(commentId);
     }
-    public List<Comments> findByPostIdOrderByCreatedDateDesc(Long postId) {
+    public List<Comment> findByPostIdOrderByCreatedDateDesc(Long postId) {
         return commentRepository.findByPostIdOrderByCreatedDateDesc(postId);
     }
 
-    public Comments findById(Long commentId) {
+    public Comment findById(Long commentId) {
         return commentRepository.findById(commentId);
     }
 
-    public List<Comments> findAllByPost(Long postId) {
+    public List<Comment> findAllByPost(Long postId) {
         return commentRepository.findByPost(postId);
     }
-    public List<Comments> findAllByMember(Long memberId) {
+    public List<Comment> findAllByMember(Long memberId) {
         return commentRepository.findByMember(memberId);
     }
 
