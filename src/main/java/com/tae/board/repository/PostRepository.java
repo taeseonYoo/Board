@@ -1,8 +1,6 @@
 package com.tae.board.repository;
 
-import com.tae.board.domain.Comments;
 import com.tae.board.domain.Post;
-import com.tae.board.exception.PostNotFoundException;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

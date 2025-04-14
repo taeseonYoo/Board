@@ -6,15 +6,15 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Comments extends BaseTimeEntity {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comments_id")
+    @Column(name = "comment_id")
     private Long id;
 
     @Column(length = 100,nullable = false)
-    private String comment;
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -24,17 +24,17 @@ public class Comments extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    protected Comments() {
+    protected Comment() {
     }
 
-    public Comments(String comment, Member member, Post post) {
+    public Comment(String content, Member member, Post post) {
         setPost(post);
         this.member = member;
-        this.comment = comment;
+        this.content = content;
     }
 
-    public static Comments createComments(String comment, Member member, Post post) {
-        return new Comments(comment, member, post);
+    public static Comment createComments(String content, Member member, Post post) {
+        return new Comment(content, member, post);
     }
 
 
@@ -51,8 +51,8 @@ public class Comments extends BaseTimeEntity {
     /**
      * 비즈니스 로직
      */
-    public void updateComments(String comment) {
-        this.comment = comment;
+    public void updateComments(String content) {
+        this.content = content;
     }
 
 

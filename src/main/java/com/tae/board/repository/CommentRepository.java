@@ -1,6 +1,6 @@
 package com.tae.board.repository;
 
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -14,31 +14,31 @@ public class CommentRepository {
     private final EntityManager em;
 
     //댓글 작성
-    public Comments save(Comments comments) {
-        em.persist(comments);
-        return comments;
+    public Comment save(Comment comment) {
+        em.persist(comment);
+        return comment;
     }
 
     //댓글 삭제
     public void delete(Long commentId) {
-        Comments comment = em.find(Comments.class, commentId);
+        Comment comment = em.find(Comment.class, commentId);
         em.remove(comment);
     }
 
 
     //댓글 단건조회
-    public Comments findById(Long commentId) {
-        return em.find(Comments.class, commentId);
+    public Comment findById(Long commentId) {
+        return em.find(Comment.class, commentId);
     }
     //게시글 번호로 댓글 찾기
-    public List<Comments> findByPost(Long postId) {
-        return em.createQuery("select c from Comments c where c.post.id = :postId",Comments.class)
+    public List<Comment> findByPost(Long postId) {
+        return em.createQuery("select c from Comment c where c.post.id = :postId", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }
     //게시자 id로 댓글 찾기
-    public List<Comments> findByMember(Long memberId) {
-        return em.createQuery("select c from Comments c where c.member.id = :memberId",Comments.class)
+    public List<Comment> findByMember(Long memberId) {
+        return em.createQuery("select c from Comment c where c.member.id = :memberId", Comment.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
     }
@@ -46,10 +46,10 @@ public class CommentRepository {
     /**
     * 수정 코드 N+1문제 해결
     * */
-    public List<Comments> findByPostIdOrderByCreatedDateDesc(Long postId) {
-        return em.createQuery("select c from Comments c join fetch c.member" +
+    public List<Comment> findByPostIdOrderByCreatedDateDesc(Long postId) {
+        return em.createQuery("select c from Comment c join fetch c.member" +
                         " where c.post.id = :postId" +
-                        " order by c.createdDate desc", Comments.class)
+                        " order by c.createdDate desc", Comment.class)
                 .setParameter("postId", postId)
                 .getResultList();
     }

@@ -63,7 +63,7 @@
 <img width="750" alt="all" src="https://github.com/user-attachments/assets/65d3958d-2f17-47d2-9c18-ab468b78d265" />
 <img width="750" alt="member" src="https://github.com/user-attachments/assets/1ac35aed-42a6-424d-aab6-8295306b6b27" />
 <img width="750" alt="post" src="https://github.com/user-attachments/assets/9d5c5dc9-0068-47e8-b737-ad55467c8111" />
-<img width="750" alt="comments" src="https://github.com/user-attachments/assets/d0d73149-0339-4685-bb7f-3b08205233ba" />
+<img width="750" alt="comment" src="https://github.com/user-attachments/assets/d0d73149-0339-4685-bb7f-3b08205233ba" />
 
 ### 2. API설계
 <img width="750" alt="memberAPI" src="https://github.com/user-attachments/assets/9321abc1-1771-4f46-a50c-c27da025dc8c" />

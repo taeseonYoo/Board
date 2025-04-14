@@ -1,7 +1,7 @@
 package com.tae.board.service;
 
 import com.tae.board.controller.form.MemberForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.dto.MemberInfoDto;
@@ -10,7 +10,6 @@ import com.tae.board.repository.CommentRepository;
 import com.tae.board.repository.MemberRepository;
 import com.tae.board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +70,7 @@ public class MemberService {
     public MemberInfoDto getMemberInfo(String email) {
         Member findByEmail = memberRepository.findByEmail(email);
         List<Post> findPosts = postRepository.findAllByMember(findByEmail.getId());
-        List<Comments> findComments = commentRepository.findByMember(findByEmail.getId());
+        List<Comment> findComments = commentRepository.findByMember(findByEmail.getId());
 
         return MemberInfoDto.createMemberInfo(findByEmail.getName(),
                 findByEmail.getEmail(),

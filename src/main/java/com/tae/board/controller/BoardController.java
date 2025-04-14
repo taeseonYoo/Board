@@ -3,7 +3,7 @@ package com.tae.board.controller;
 import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.CommentForm;
 import com.tae.board.controller.form.PostForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Post;
 import com.tae.board.dto.PageInfoDto;
 import com.tae.board.security.MemberDetail;
@@ -61,7 +61,7 @@ public class BoardController {
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
 
-        List<Comments> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
+        List<Comment> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
         model.addAttribute("comments", comments);
 
         return "post/postForm";

@@ -3,7 +3,7 @@ package com.tae.board.unit.service;
 import com.tae.board.MemberBuilder;
 import com.tae.board.PostBuilder;
 import com.tae.board.controller.form.CommentEditForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Member;
 import com.tae.board.domain.Post;
 import com.tae.board.exception.CommentNotFoundException;
@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,7 +56,7 @@ public class CommentServiceTest {
                 .build();
         ReflectionTestUtils.setField(post, "id", 1L);
 
-        Comments comment = Comments.createComments("Comment", member, post);
+        Comment comment = Comment.createComments("Comment", member, post);
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         BDDMockito.given(mockPostRepo.findOne(any()))
@@ -74,9 +72,9 @@ public class CommentServiceTest {
         Long commentId = commentService.write(1L, 1L, "Comment");
 
         //then
-        Comments savedComment = commentService.findById(commentId);
+        Comment savedComment = commentService.findById(commentId);
         assertThat(savedComment).isNotNull();
-        assertThat(savedComment.getComment()).isEqualTo("Comment");
+        assertThat(savedComment.getContent()).isEqualTo("Comment");
     }
 
     @Test
@@ -93,7 +91,7 @@ public class CommentServiceTest {
                 .build();
         ReflectionTestUtils.setField(post, "id", 1L);
 
-        Comments comment = Comments.createComments("Before Comment", member, post);
+        Comment comment = Comment.createComments("Before Comment", member, post);
         ReflectionTestUtils.setField(comment, "id", 1L);
 
         BDDMockito.given(mockPostRepo.findOne(any()))
@@ -110,8 +108,8 @@ public class CommentServiceTest {
                 1L, CommentEditForm.create("After Comment"));
 
         //then
-        Comments savedComment = commentService.findById(commentId);
-        assertThat(savedComment.getComment()).isEqualTo("After Comment");
+        Comment savedComment = commentService.findById(commentId);
+        assertThat(savedComment.getContent()).isEqualTo("After Comment");
     }
 
     @Test
@@ -164,7 +162,7 @@ public class CommentServiceTest {
                 .member(member)
                 .build();
 
-        Comments comment = Comments.createComments("Before Comment", member, post);
+        Comment comment = Comment.createComments("Before Comment", member, post);
 
         BDDMockito.given(mockPostRepo.findOne(any()))
                 .willReturn(post);
@@ -191,7 +189,7 @@ public class CommentServiceTest {
                 .member(member)
                 .build();
 
-        Comments comment = Comments.createComments("Before Comment", member, post);
+        Comment comment = Comment.createComments("Before Comment", member, post);
 
         BDDMockito.given(mockPostRepo.findOne(any()))
                 .willReturn(post);
@@ -258,7 +256,7 @@ public class CommentServiceTest {
                 .member(member)
                 .build();
 
-        Comments comment = Comments.createComments("Before Comment", member, post);
+        Comment comment = Comment.createComments("Before Comment", member, post);
 
         BDDMockito.given(mockPostRepo.findOne(any()))
                 .willReturn(post);
@@ -284,9 +282,9 @@ public class CommentServiceTest {
                 .member(member)
                 .build();
 
-        List<Comments> comments = new ArrayList<>();
+        List<Comment> comments = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            Comments comment = Comments.createComments(i + "", member, post);
+            Comment comment = Comment.createComments(i + "", member, post);
             ReflectionTestUtils.setField(comment, "createdDate", LocalDateTime.now().minusMinutes(i));
             comments.add(comment);
         }
@@ -295,10 +293,10 @@ public class CommentServiceTest {
                 .willReturn(comments);
 
         //when
-        List<Comments> savedComment = commentService.findByPostIdOrderByCreatedDateDesc(1L);
+        List<Comment> savedComment = commentService.findByPostIdOrderByCreatedDateDesc(1L);
 
 
         //then
-        assertThat(savedComment).isSortedAccordingTo(Comparator.comparing(Comments::getCreatedDate).reversed());
+        assertThat(savedComment).isSortedAccordingTo(Comparator.comparing(Comment::getCreatedDate).reversed());
     }
 }
