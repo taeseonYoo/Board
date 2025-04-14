@@ -9,13 +9,13 @@ public class CommentEditForm {
 
     @NotEmpty
     @Size(max = 100)
-    private String comment;
+    private String content;
 
-    private CommentEditForm(String comment) {
-        this.comment = comment;
+    private CommentEditForm(String content) {
+        this.content = content;
     }
 
-    public static CommentEditForm create(String comment){
-        return new CommentEditForm(comment);
+    public static CommentEditForm create(String content){
+        return new CommentEditForm(content);
     }
 }

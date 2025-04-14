@@ -2,7 +2,7 @@ package com.tae.board.controller;
 
 import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.CommentForm;
-import com.tae.board.domain.Comments;
+import com.tae.board.domain.Comment;
 import com.tae.board.domain.Post;
 import com.tae.board.security.MemberDetail;
 import com.tae.board.service.CommentService;
@@ -31,10 +31,10 @@ public class CommentController {
                            @ModelAttribute CommentForm commentForm,
                            Model model){
 
-        Comments comment = commentService.findById(commentId);
+        Comment comment = commentService.findById(commentId);
 
         loadPostDetails(model, postId);
-        model.addAttribute("commentEditForm", CommentEditForm.create(comment.getComment()));
+        model.addAttribute("commentEditForm", CommentEditForm.create(comment.getContent()));
 
         model.addAttribute("targetId",commentId);
 
@@ -52,7 +52,7 @@ public class CommentController {
             return "post/postForm";
         }
 
-        commentService.write(postId,memberDetail.getMember().getId(), commentForm.getComment());
+        commentService.write(postId,memberDetail.getMember().getId(), commentForm.getContent());
 
         return "redirect:/board/post/" + postId;
     }
@@ -87,7 +87,7 @@ public class CommentController {
     private void loadPostDetails(Model model, Long postId) {
         Post post = postService.viewPost(postId);
         model.addAttribute("post", post);
-        List<Comments> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
+        List<Comment> comments = commentService.findByPostIdOrderByCreatedDateDesc(postId);
         model.addAttribute("comments", comments);
     }
 

@@ -32,7 +32,7 @@ public class Post extends BaseTimeEntity{
     private String writer;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comments> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     protected Post() {
 
