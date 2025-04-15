@@ -1,4 +1,4 @@
-package com.tae.board.security;
+package com.tae.board.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth->auth.requestMatchers("/hc","/env").permitAll())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/board","/","/auth/login",
                                 "/auth/register", "/css/**", "/js/**").permitAll()

@@ -1,4 +1,4 @@
-package com.tae.board.security;
+package com.tae.board.config.security;
 
 import com.tae.board.domain.Member;
 import com.tae.board.repository.MemberRepository;

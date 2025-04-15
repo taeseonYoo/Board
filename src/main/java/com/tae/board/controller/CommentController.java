@@ -4,7 +4,7 @@ import com.tae.board.controller.form.CommentEditForm;
 import com.tae.board.controller.form.CommentForm;
 import com.tae.board.domain.Comment;
 import com.tae.board.domain.Post;
-import com.tae.board.security.MemberDetail;
+import com.tae.board.config.security.MemberDetail;
 import com.tae.board.service.CommentService;
 import com.tae.board.service.PostService;
 import jakarta.validation.Valid;

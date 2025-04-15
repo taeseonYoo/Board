@@ -2,14 +2,12 @@ package com.tae.board.controller;
 
 import com.tae.board.controller.form.LoginForm;
 import com.tae.board.controller.form.MemberForm;
-import com.tae.board.domain.Member;
 import com.tae.board.dto.MemberInfoDto;
-import com.tae.board.security.MemberDetail;
+import com.tae.board.config.security.MemberDetail;
 import com.tae.board.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

@@ -2,7 +2,7 @@ package com.tae.board.integration.controller;
 
 import com.tae.board.controller.form.MemberForm;
 import com.tae.board.domain.Member;
-import com.tae.board.security.MemberDetail;
+import com.tae.board.config.security.MemberDetail;
 import com.tae.board.service.MemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
 
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
