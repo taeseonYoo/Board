@@ -25,7 +25,10 @@ jobs:
         run: ./gradlew clean build -x test
 
       - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Add ec2 profile config
         run: echo "${{ secrets.APPLICATION_EC2 }}" | base64 --decode > ./src/main/resources/application-ec2.yml
       - name: Build docker image
