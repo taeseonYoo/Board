@@ -1,0 +1,47 @@
+name: CICD
+
+on: 
+  push:
+    branches: [deploy]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Add ec2 profile config
+        run: echo "${{ secrets.APPLICATION_EC2 }}" | base64 --decode > ./src/main/resources/application-ec2.yml
+      - name: Build docker image
+        run: docker build -t taeseon99/board .
+      - name: Publish image to docker hub
+        run: docker push taeseon99/board:latest
+        
+  deploy: 
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Pull Image from docker hub
+        run: docker pull taeseon99/board:latest
+      - name: Delete old container
+        run: docker rm -f board-container
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name board-container taeseon99/board
+        
+  
