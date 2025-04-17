@@ -17,20 +17,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: |
+          echo "${{ secrets.APPLICATION_EC2 }}" | base64 --decode > ./src/main/resources/application-ec2.yml
+          cat ./src/main/resources/application-ec2.yml
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Add ec2 profile config
-        run: echo "${{ secrets.APPLICATION_EC2 }}" | base64 --decode > ./src/main/resources/application-ec2.yml
       - name: Build docker image
         run: docker build -t taeseon99/board .
       - name: Publish image to docker hub
