@@ -19,3 +19,6 @@
 1744640249451|0|statement|connection 42|url jdbc:h2:mem:02099a0d-35b2-4e21-9e30-53a42a80aafa|drop table if exists comment cascade |drop table if exists comment cascade 
 1744640249452|0|statement|connection 42|url jdbc:h2:mem:02099a0d-35b2-4e21-9e30-53a42a80aafa|drop table if exists member cascade |drop table if exists member cascade 
 1744640249452|0|statement|connection 42|url jdbc:h2:mem:02099a0d-35b2-4e21-9e30-53a42a80aafa|drop table if exists post cascade |drop table if exists post cascade 
+1744819236424|0|statement|connection 42|url jdbc:h2:mem:617567da-b5db-4bab-9902-47326a32f210|drop table if exists comment cascade |drop table if exists comment cascade 
+1744819236425|0|statement|connection 42|url jdbc:h2:mem:617567da-b5db-4bab-9902-47326a32f210|drop table if exists member cascade |drop table if exists member cascade 
+1744819236425|0|statement|connection 42|url jdbc:h2:mem:617567da-b5db-4bab-9902-47326a32f210|drop table if exists post cascade |drop table if exists post cascade 
