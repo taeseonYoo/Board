@@ -30,19 +30,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build docker image
-        run: docker build -t taeseon99/board .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/board .
       - name: Publish image to docker hub
-        run: docker push taeseon99/board:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/board:latest
         
   deploy: 
     needs: build
     runs-on: [aws-ec2]
     steps:
       - name: Pull Image from docker hub
-        run: docker pull taeseon99/board:latest
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/board:latest
       - name: Delete old container
         run: docker rm -f board-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name board-container taeseon99/board
+        run: docker run -d -p 8080:8080 --name board-container ${{ secrets.DOCKER_USERNAME }}/board
         
   
